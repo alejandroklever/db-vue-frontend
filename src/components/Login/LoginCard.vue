@@ -17,6 +17,7 @@
             rounded
             outlined
           ></v-text-field>
+
           <v-text-field
             label="Contraseña"
             v-model="password"
@@ -26,6 +27,14 @@
             outlined
             @click:append="showPassword = !showPassword"
           ></v-text-field>
+
+          <v-row justify="center">
+            <v-checkbox
+              label="Administrdor"
+              v-model="isAdmin"
+              >
+            </v-checkbox>
+          </v-row>
         </v-col>
 
         <v-col cols="12">
@@ -61,6 +70,7 @@ const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\
 @Component
 export default class LoginCard extends Vue {
   private showPassword = false;
+  private isAdmin = false;
   private usernameOrEmail!: string;
   private password!: string;
 
