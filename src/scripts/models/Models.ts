@@ -3,7 +3,7 @@ function toTypescriptCase(s : string): string{
 
     stringArray.forEach(
         (value, index, array) =>
-            array[index] = index - 1 >= 0 && array[index - 1] == '_' ? value.toUpperCase() : value);
+            array[index] = index - 1 > 0 && array[index - 1] == '_' ? value.toUpperCase() : value);
 
     return stringArray.filter((value) => value != '_').join('');
 }
@@ -46,5 +46,3 @@ class Article extends Model{
     startDate!: string;
     endDate!: string;
 }
-
-console.log(toTypescriptCase('_last_name_foo'));
