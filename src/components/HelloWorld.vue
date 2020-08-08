@@ -82,6 +82,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable */
 import Vue from "vue";
 
 export default Vue.extend({

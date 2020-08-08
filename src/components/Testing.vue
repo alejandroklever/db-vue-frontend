@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Model, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 class Person {
   public name!: string;
@@ -28,6 +28,7 @@ class Person {
 
 @Component
 export default class Testing extends Vue {
+  @Prop() message!: string;
   private user: Person = new Person();
   private userList: Person[] = [];
 
