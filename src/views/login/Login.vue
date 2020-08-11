@@ -82,7 +82,7 @@
     const badInputMessage = "Usuario no reconocido";
 
     @Component
-    export default class LoginCard extends Vue {
+    export default class Login extends Vue {
           private badLogin = false;
           private showPassword = false;
           private isAdmin = false;
