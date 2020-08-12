@@ -1,10 +1,9 @@
-import UserModel from "@/scripts/models/Models";
 
 export default class DataManager {
     private static _instance?: DataManager;
 
     message = 'Hello';
-    currentUser!: UserModel;
+    //currentUser!: UserModel;
 
     // eslint-disable-next-line
     private constructor() { }

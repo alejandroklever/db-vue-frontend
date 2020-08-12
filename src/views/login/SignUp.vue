@@ -85,7 +85,6 @@
     /* eslint-disable */
     import { Component, Vue } from "vue-property-decorator";
     import { emailPattern } from "@/scripts/Constants";
-    import Models from "@/scripts/models/Models";
 
     @Component
     export default class LoginCard extends Vue {
@@ -112,7 +111,7 @@
                 invalidSecondEmail = true;
 
             if (!unmatchedPasswords && !invalidEmail && !invalidSecondEmail)
-                console.log(new UserModel(this.username, this.email, this.secondEmail, this.password));
+                console.log([this.username, this.email, this.secondEmail, this.password]);
             else
                 console.log("Bad Register")
         }
