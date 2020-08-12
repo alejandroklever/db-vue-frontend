@@ -61,7 +61,7 @@
                                 <v-btn
                                     rounded
                                     color="secondary"
-                                    :to="{name: 'sign-up'}"
+                                    :to="{name: 'sign-up'}" 
                                 >
                                 <span>Registrarse</span>
                                 </v-btn>
@@ -82,7 +82,7 @@
     const badInputMessage = "Usuario no reconocido";
 
     @Component
-    export default class LoginCard extends Vue {
+    export default class Login extends Vue {
           private badLogin = false;
           private showPassword = false;
           private isAdmin = false;
@@ -98,7 +98,7 @@
                     // login with password
                 }
                 console.log('password: ' + this.password);
-                this.$router.push({ name: 'dashboard' });
+                this.$router.push({ name: 'dashboard' });   //js, arriba desde html en autentificarse
           }
     }
 </script>

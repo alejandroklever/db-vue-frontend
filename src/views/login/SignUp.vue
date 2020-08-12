@@ -15,42 +15,40 @@
                     <v-col class="offset-1" cols="10">
                         <v-text-field
                                 label="Nombre de Usuario"
-                                v-model="username"
+                                v-model="user.username"
+                                rounded
+                                outlined
+                        ></v-text-field>
+                        <v-text-field
+                                label="Email"
+                                v-model="user.email"
                                 rounded
                                 outlined
                         ></v-text-field>
 
-                                <v-text-field
-                                        label="Email"
-                                        v-model="email"
-                                        rounded
-                                        outlined
-                                ></v-text-field>
-                                <v-text-field
-                                        label="Segundo Email (Opcional)"
-                                        v-model="secondEmail"
-                                        rounded
-                                        outlined
-                                ></v-text-field>
-
-                                <v-text-field
-                                    label="Contraseña"
-                                    v-model="password"
-                                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                                    :type="showPassword ? 'text': 'password'"
-                                    rounded
-                                    outlined
-                                    @click:append="showPassword = !showPassword"
-                                ></v-text-field>
-                                <v-text-field
-                                    label="Repita la contraseña"
-                                    v-model="password2"
-                                    :append-icon="showPassword2 ? 'mdi-eye' : 'mdi-eye-off'"
-                                    :type="showPassword2 ? 'text': 'password'"
-                                    rounded
-                                    outlined
-                                    @click:append="showPassword2 = !showPassword2"
-                                ></v-text-field>
+                        <v-text-field
+                            label="Contraseña"
+                            v-model="user.password"
+                            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                            :type="showPassword ? 'text': 'password'"
+                            rounded
+                            outlined
+                            @click:append="showPassword = !showPassword"
+                        ></v-text-field>
+                        <v-text-field
+                            label="Repita la contraseña"
+                            v-model="password2"
+                            :append-icon="showPassword2 ? 'mdi-eye' : 'mdi-eye-off'"
+                            :type="showPassword2 ? 'text': 'password'"
+                            rounded
+                            outlined
+                            @click:append="showPassword2 = !showPassword2"
+                        ></v-text-field>
+                        <v-fade-transition origin="center center">
+                            <v-row justify="center" v-show="badRegister">
+                                <label class="red--text">Credenciales invalidas</label>
+                            </v-row>
+                        </v-fade-transition>
                     </v-col>
 
                     <v-col cols="12">
@@ -85,35 +83,34 @@
     /* eslint-disable */
     import { Component, Vue } from "vue-property-decorator";
     import { emailPattern } from "@/scripts/Constants";
+    import RequestManager from "@/scripts/RequestManager";
 
     @Component
-    export default class LoginCard extends Vue {
+    export default class SignUp extends Vue {
         private showPassword = false;
         private showPassword2 = false;
-        private username!: string;
-        private email!: string;
-        private secondEmail!: string;
-        private password!: string;
-        private password2!: string;
+        private badRegister = false;
+        private password2 = '';
+
+        private user = {
+            username: '',
+            email: '',
+            password: '',
+            isSuperuser: false,
+        }
 
         createUser(): void {
-            let unmatchedPasswords = false;
-            let invalidEmail = false;
-            let invalidSecondEmail = false;
+            let matchedPasswords = this.user.password == this.password2;
+            let validEmail = emailPattern.test(this.user.email);
 
-            if (this.password != this.password2)
-                unmatchedPasswords = true;
-
-            if (!emailPattern.test(this.email))
-                invalidEmail = true;
-
-            if (this.secondEmail != undefined && this.secondEmail != "" && !emailPattern.test(this.secondEmail))
-                invalidSecondEmail = true;
-
-            if (!unmatchedPasswords && !invalidEmail && !invalidSecondEmail)
-                console.log([this.username, this.email, this.secondEmail, this.password]);
-            else
-                console.log("Bad Register")
+            if (matchedPasswords && validEmail) {
+                this.badRegister = false;
+                RequestManager.postCreateUser(this.user);
+                // this.$router.push({ name: 'dashboard' });
+            }
+            else {
+                this.badRegister = true;
+            }
         }
     }
 </script>

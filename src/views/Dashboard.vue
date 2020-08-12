@@ -61,7 +61,7 @@
 <script lang="ts">
     /* eslint-disable */
     import { Component, Vue } from "vue-property-decorator";
-    import DataManager from "@/scripts/DataManager";
+    import UserManager from "@/scripts/UserManager";
 
     @Component
     export default class Dashboard extends Vue {
