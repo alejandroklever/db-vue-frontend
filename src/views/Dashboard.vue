@@ -43,7 +43,7 @@
                 <v-list-item
                     v-for="item in items"
                     v-bind:key="item.title"
-                    link
+                    @click="action(item.action)"
                     
                 >
                     <v-list-item-icon>
@@ -104,23 +104,29 @@
     export default class Dashboard extends Vue {
         private permanent = true;
         private miniVariant = false;   
-        showArticleList = false; 
+        showDashboard = false;
+        showArticleList = false;
+        showRevList = false;
+        showPhotos = false;
+        showAbout = false; 
 
         private items = [
-            { title: 'Dashboard', icon: 'mdi-view-dashboard', action: 'escapeRoute()' },
-            { title: 'Artículos', icon: 'mdi-file-document-outline', action: 'listArticle()' },
-            { title: 'Revision', icon: 'mdi-file-document-edit-outline', action: 'escapeRoute()' },
-            { title: 'Photos', icon: 'mdi-image', action: 'escapeRoute()' },
-            { title: 'About', icon: 'mdi-help-box', action: 'escapeRoute()' },
+            { title: 'Dashboard', icon: 'mdi-view-dashboard', action: 1 },
+            { title: 'Artículos', icon: 'mdi-file-document-outline', action: 2 },
+            { title: 'Revision', icon: 'mdi-file-document-edit-outline', action: 3 },
+            { title: 'Photos', icon: 'mdi-image', action: 4 },
+            { title: 'About', icon: 'mdi-help-box', action: 5 },
         ];
 
-        listArticle(){
-            this.showArticleList = true;
+        action(item: number){ 
+            this.showAbout = this.showArticleList = this.showDashboard = this.showPhotos = this.showRevList = false;
+            if(item == 1) this.showDashboard = true;
+            else if(item == 2) this.showArticleList = true;
+            else if(item == 3) this.showRevList = true;
+            else if(item == 4) this.showPhotos = true;
+            else this.showAbout = true;
         }
 
-        escapeRoute(){
-            this.showArticleList = false
-        }
 
         data() {
             return{
