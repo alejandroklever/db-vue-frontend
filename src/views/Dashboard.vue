@@ -8,7 +8,9 @@
         >
             <v-app-bar-nav-icon @click="miniVariant = !miniVariant"></v-app-bar-nav-icon>
             <v-toolbar-title class="font-weight-bold">Revista Cientifica</v-toolbar-title>
-            <v-spacer></v-spacer>
+            <v-spacer>
+               
+            </v-spacer>
             <v-icon>mdi-account</v-icon>
 
         </v-app-bar>
@@ -37,11 +39,12 @@
                 </v-list-item>
 
                 <v-divider></v-divider>
-
+                
                 <v-list-item
                         v-for="item in items"
                         :key="item.title"
-                        link
+                        @click="listArticle()"
+                        
                 >
                     <v-list-item-icon>
                         <v-icon>{{ item.icon }}</v-icon>
@@ -54,19 +57,56 @@
 
             </v-list>
         </v-navigation-drawer>
-
+        <v-main>
+            <v-container
+                class="fill-height"
+                style="padding-top: 20px; height: 100%"
+                fluid
+            >
+                <div v-if="showArticleList">
+                    <v-simple-table
+                        class="center absolute"
+                    >
+                        <template v-slot:default>
+                        <thead>
+                            <tr>
+                            <th class="text-left">Titulo</th>
+                            <th class="text-left">Palabras Claves</th>
+                            <th class="text-left">Evaluacion</th>
+                            <th class="text-left">Fecha Inicial</th>
+                            <th class="text-left">Fecha Final</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in tableData" :key="item.name">
+                            <td>{{ item.title }}</td>
+                            <td>{{ item.keywords }}</td>
+                            <td>{{ item.evaluation }}</td>
+                            <td>{{ item.start_date }}</td>
+                            <td>{{ item.end_date }}</td>
+                            </tr>
+                        </tbody>
+                        </template>
+                    </v-simple-table>
+                </div>
+            </v-container>
+        </v-main>
     </div>
+    
 </template>
 
 <script lang="ts">
     /* eslint-disable */
     import { Component, Vue } from "vue-property-decorator";
     import UserManager from "@/scripts/UserManager";
+    import RequestManager from "@/scripts/RequestManager"
 
     @Component
     export default class Dashboard extends Vue {
         private permanent = true;
-        private miniVariant = false;
+        private miniVariant = false;   
+        showArticleList = false; 
+
         private items = [
             { title: 'Dashboard', icon: 'mdi-view-dashboard' },
             { title: 'Artículos', icon: 'mdi-file-document-outline' },
@@ -75,5 +115,22 @@
             { title: 'About', icon: 'mdi-help-box'},
         ];
 
+        listArticle(){
+            RequestManager.getArticleList();
+        }
+
+        data() {
+            return{
+                headers: [
+                { text: 'Listado de Articulos (Nombre)', value: 'title', align: 'start' },
+                { text: 'Id Del trabajo', value: 'id' },
+                { text: 'Palabras Claves', value: 'keywords' },
+                { text: 'Evaluacion', value: 'evaluation' },
+                { text: 'Fecha Inicial', value: 'start_date' },
+                { text: 'Fecha Final', value: 'end_date' },
+                ],
+                tableData: RequestManager.getArticleList(),
+            }
+        }
     }
 </script>

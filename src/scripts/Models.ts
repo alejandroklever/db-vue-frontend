@@ -38,7 +38,7 @@ export function objectToCamelCase(data: any): any {
   return newData;
 }
 
-export class Model {
+export class Model {//UN OBJETO CUALQUIERA CON LAS QUE TENGO, SI UNA NO MATCH NO SE PONE, NO le importa a js no explota
   id!: number;
 
   constructor(object: any) {
@@ -53,8 +53,8 @@ export class User extends Model {
   firstName!: string;
   lastName!: string;
   email!: string;
-  email2!: string;
-  password!: string;
+  email2!: string; //de vue->django  (<- no se puede)
+  password!: string; // de vue->django 
   isSuperuser = false;
 }
 

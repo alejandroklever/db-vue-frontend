@@ -10,6 +10,9 @@ export default class UserManager {
   institution?: string;
   ORCID?: number;
 
+  //evitar usar las propiedades directas/ se hace a ytravez del metodo
+  //todos estatico, else privado, y para algo especifico
+  //realizDOR DE  REQUEST Y MANEJADOR DE USUSARIO 
 
   // eslint-disable-next-line
   private constructor() {}
@@ -23,4 +26,5 @@ export default class UserManager {
   static setUser(data: any): User {
     return this.instance.currentUser = new User(objectToCamelCase(data));
   }
+  
 }
