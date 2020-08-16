@@ -41,10 +41,10 @@
                 <v-divider></v-divider>
                 
                 <v-list-item
-                        v-for="item in items"
-                        :key="item.title"
-                        @click="listArticle()"
-                        
+                    v-for="item in items"
+                    v-bind:key="item.title"
+                    link
+                    
                 >
                     <v-list-item-icon>
                         <v-icon>{{ item.icon }}</v-icon>
@@ -54,7 +54,6 @@
                         <v-list-item-title>{{ item.title }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-
             </v-list>
         </v-navigation-drawer>
         <v-main>
@@ -108,15 +107,19 @@
         showArticleList = false; 
 
         private items = [
-            { title: 'Dashboard', icon: 'mdi-view-dashboard' },
-            { title: 'Artículos', icon: 'mdi-file-document-outline' },
-            { title: 'Revision', icon: 'mdi-file-document-edit-outline' },
-            { title: 'Photos', icon: 'mdi-image' },
-            { title: 'About', icon: 'mdi-help-box'},
+            { title: 'Dashboard', icon: 'mdi-view-dashboard', action: 'escapeRoute()' },
+            { title: 'Artículos', icon: 'mdi-file-document-outline', action: 'listArticle()' },
+            { title: 'Revision', icon: 'mdi-file-document-edit-outline', action: 'escapeRoute()' },
+            { title: 'Photos', icon: 'mdi-image', action: 'escapeRoute()' },
+            { title: 'About', icon: 'mdi-help-box', action: 'escapeRoute()' },
         ];
 
         listArticle(){
-            RequestManager.getArticleList();
+            this.showArticleList = true;
+        }
+
+        escapeRoute(){
+            this.showArticleList = false
         }
 
         data() {

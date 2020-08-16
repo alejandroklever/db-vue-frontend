@@ -36,12 +36,14 @@ export default class RequestManager {
                         list.push(item.article);
                 }
             }
+        })
+        .catch(reason =>{
+            console.log(reason);
         });
     }
     static getArticleList(){
         const list: object[] = [];
         this.getArticleListUtils(list, 1);
-        console.log(list);
         return list;
     }
 

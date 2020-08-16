@@ -53,8 +53,8 @@ export class User extends Model {
   firstName!: string;
   lastName!: string;
   email!: string;
-  email2!: string; //de vue->django  (<- no se puede)
-  password!: string; // de vue->django 
+  email2!: string;
+  password!: string;  
   isSuperuser = false;
 }
 
