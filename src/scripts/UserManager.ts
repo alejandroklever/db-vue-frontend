@@ -10,7 +10,6 @@ export default class UserManager {
   institution?: string;
   ORCID?: number;
 
-
   // eslint-disable-next-line
   private constructor() {}
 
@@ -23,4 +22,5 @@ export default class UserManager {
   static setUser(data: any): User {
     return this.instance.currentUser = new User(objectToCamelCase(data));
   }
+  
 }

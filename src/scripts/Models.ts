@@ -38,7 +38,7 @@ export function objectToCamelCase(data: any): any {
   return newData;
 }
 
-export class Model {
+export class Model {//UN OBJETO CUALQUIERA CON LAS QUE TENGO, SI UNA NO MATCH NO SE PONE, NO le importa a js no explota
   id!: number;
 
   constructor(object: any) {
@@ -54,7 +54,7 @@ export class User extends Model {
   lastName!: string;
   email!: string;
   email2!: string;
-  password!: string;
+  password!: string;  
   isSuperuser = false;
 }
 
