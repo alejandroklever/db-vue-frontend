@@ -96,7 +96,6 @@
             username: '',
             email: '',
             password: '',
-            isSuperuser: false,
         }
 
         createUser(): void {

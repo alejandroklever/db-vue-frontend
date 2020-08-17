@@ -61,7 +61,7 @@
                                 <v-btn
                                     rounded
                                     color="secondary"
-                                    :to="{name: 'sign-up'}" 
+                                    :to="{name: 'sign-up'}"
                                 >
                                 <span>Registrarse</span>
                                 </v-btn>
@@ -98,7 +98,7 @@
                     // login with password
                 }
                 console.log('password: ' + this.password);
-                this.$router.push({ name: 'dashboard' });   //js, arriba desde html en autentificarse
+                this.$router.push({ name: 'dashboard' });
           }
     }
 </script>

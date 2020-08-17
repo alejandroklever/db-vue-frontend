@@ -8,9 +8,7 @@
         >
             <v-app-bar-nav-icon @click="miniVariant = !miniVariant"></v-app-bar-nav-icon>
             <v-toolbar-title class="font-weight-bold">Revista Cientifica</v-toolbar-title>
-            <v-spacer>
-               
-            </v-spacer>
+            <v-spacer></v-spacer>
             <v-icon>mdi-account</v-icon>
 
         </v-app-bar>
@@ -54,6 +52,7 @@
                         <v-list-item-title>{{ item.title }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+
             </v-list>
         </v-navigation-drawer>
         <v-main>
