@@ -53,9 +53,7 @@ export class User extends Model {
   firstName!: string;
   lastName!: string;
   email!: string;
-  email2!: string;
-  password!: string;  
-  isSuperuser = false;
+  isSuperuser !: boolean;
 }
 
 export class Author extends Model {

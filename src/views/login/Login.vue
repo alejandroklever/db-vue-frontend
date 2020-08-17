@@ -78,6 +78,7 @@
     /* eslint-disable */
     import { Component, Vue } from "vue-property-decorator";
     import { emailPattern } from "@/scripts/Constants";
+    import RequestManager from "@/scripts/RequestManager";
 
     const badInputMessage = "Usuario no reconocido";
 
@@ -91,14 +92,18 @@
 
           login(): void {
                 if (emailPattern.test(this.usernameOrEmail)) {
-                    console.log("logged with email: " + this.usernameOrEmail);
-                    // login with email
+                    RequestManager.getLoginUser({
+                        email: this.usernameOrEmail,
+                        password: this.password
+                    });
                 } else {
-                    console.log("logged with username: " + this.usernameOrEmail);
-                    // login with password
+                    RequestManager.getLoginUser({
+                        username: this.usernameOrEmail,
+                        password: this.password
+                    });
                 }
-                console.log('password: ' + this.password);
-                this.$router.push({ name: 'dashboard' });
+                // console.log('password: ' + this.password);
+                // this.$router.push({ name: 'dashboard' });
           }
     }
 </script>
