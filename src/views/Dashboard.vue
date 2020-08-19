@@ -1,100 +1,95 @@
 <template>
-    <div>
-        <v-app-bar app
-                    absolute
-                    color="blue darken-2"
-                    dark
-                    scroll-target="#scrolling-techniques-6"
+  <div>
+    <v-app-bar
+      app
+      absolute
+      color="blue darken-2"
+      dark
+      scroll-target="#scrolling-techniques-6"
+    >
+      <v-app-bar-nav-icon
+        @click="miniVariant = !miniVariant"
+      ></v-app-bar-nav-icon>
+      <v-toolbar-title class="font-weight-bold"
+        >Revista Cientifica</v-toolbar-title
+      >
+      <v-spacer></v-spacer>
+      <v-icon>mdi-account</v-icon>
+    </v-app-bar>
+    <v-navigation-drawer
+      app
+      floating
+      color="blue darken-2"
+      :mini-variant="miniVariant"
+      :permanent="false"
+      dark
+    >
+      <v-list dense nav class="py-0">
+        <v-list-item two-line class="px-0">
+          <v-list-item-avatar>
+            <v-icon>mdi-account-circle</v-icon>
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title>Application</v-list-item-title>
+            <v-list-item-subtitle>Subtext</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-divider></v-divider>
+
+        <v-list-item
+          v-for="item in items"
+          v-bind:key="item.title"
+          @click="action(item.action)"
         >
-            <v-app-bar-nav-icon @click="miniVariant = !miniVariant"></v-app-bar-nav-icon>
-            <v-toolbar-title class="font-weight-bold">Revista Cientifica</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-icon>mdi-account</v-icon>
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
 
-        </v-app-bar>
-        <v-navigation-drawer
-                app
-                floating
-                color="blue darken-2"
-                :mini-variant="miniVariant"
-                :permanent="false"
-                dark
-        >
-            <v-list
-                    dense
-                    nav
-                    class="py-0"
-            >
-                <v-list-item two-line class="px-0">
-                    <v-list-item-avatar>
-                        <v-icon>mdi-account-circle</v-icon>
-                    </v-list-item-avatar>
-
-                    <v-list-item-content>
-                        <v-list-item-title>Application</v-list-item-title>
-                        <v-list-item-subtitle>Subtext</v-list-item-subtitle>
-                    </v-list-item-content>
-                </v-list-item>
-
-                <v-divider></v-divider>
-                
-                <v-list-item
-                    v-for="item in items"
-                    v-bind:key="item.title"
-                    @click="action(item.action)"
-                    
-                >
-                    <v-list-item-icon>
-                        <v-icon>{{ item.icon }}</v-icon>
-                    </v-list-item-icon>
-
-                    <v-list-item-content>
-                        <v-list-item-title>{{ item.title }}</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-
-            </v-list>
-        </v-navigation-drawer>
-        <v-main>
-            <v-container
-                class="fill-height"
-                style="padding-top: 20px; height: 100%"
-                fluid
-            >
-                <div v-if="showArticleList">
-                    <v-simple-table
-                        class="center absolute"
-                    >
-                        <template v-slot:default>
-                        <thead>
-                            <tr>
-                            <th class="text-left">Titulo</th>
-                            <th class="text-left">Palabras Claves</th>
-                            <th class="text-left">Evaluacion</th>
-                            <th class="text-left">Fecha Inicial</th>
-                            <th class="text-left">Fecha Final</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="item in tableData" :key="item.name">
-                            <td>{{ item.title }}</td>
-                            <td>{{ item.keywords }}</td>
-                            <td>{{ item.evaluation }}</td>
-                            <td>{{ item.start_date }}</td>
-                            <td>{{ item.end_date }}</td>
-                            </tr>
-                        </tbody>
-                        </template>
-                    </v-simple-table>
-                </div>
-            </v-container>
-        </v-main>
-    </div>
-    
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+    <v-main>
+      <v-container
+        class="fill-height"
+        style="padding-top: 20px; height: 100%"
+        fluid
+      >
+        <div v-if="showArticleList">
+          <v-simple-table class="center absolute">
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th class="text-left">Titulo</th>
+                  <th class="text-left">Palabras Claves</th>
+                  <th class="text-left">Evaluacion</th>
+                  <th class="text-left">Fecha Inicial</th>
+                  <th class="text-left">Fecha Final</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in tableData" :key="item.name">
+                  <td>{{ item.title }}</td>
+                  <td>{{ item.keywords }}</td>
+                  <td>{{ item.evaluation }}</td>
+                  <td>{{ item.start_date }}</td>
+                  <td>{{ item.end_date }}</td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </div>
+      </v-container>
+    </v-main>
+  </div>
 </template>
 
 <script lang="ts">
-    /* eslint-disable */
+/* eslint-disable */
     import { Component, Vue } from "vue-property-decorator";
     import UserManager from "@/scripts/UserManager";
     import RequestManager from "@/scripts/RequestManager"
