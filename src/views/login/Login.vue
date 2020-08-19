@@ -43,7 +43,7 @@
 
                         <v-fade-transition origin="center center">
                             <v-row justify="center" v-show="badLogin">
-                                <label class="red--text">Credenciales invalidas</label>
+                                <label class="red--text">{{ this.badInputMessage }}</label>
                             </v-row>
                         </v-fade-transition>
                     </v-col>
@@ -76,35 +76,37 @@
 
 <script lang="ts">
     /* eslint-disable */
+    import {AxiosResponse} from 'axios';
     import { Component, Vue } from "vue-property-decorator";
     import { emailPattern } from "@/scripts/Constants";
     import RequestManager from "@/scripts/RequestManager";
-
-    const badInputMessage = "Usuario no reconocido";
+    import UserManager from "@/scripts/UserManager";
 
     @Component
     export default class Login extends Vue {
-          private badLogin = false;
-          private showPassword = false;
-          private isAdmin = false;
-          private usernameOrEmail!: string;
-          private password!: string;
+        private badInputMessage = "";
+        private badLogin = false;
+        private showPassword = false;
+        private isAdmin = false;
+        private usernameOrEmail!: string;
+        private password!: string;
 
-          login(): void {
-                if (emailPattern.test(this.usernameOrEmail)) {
-                    RequestManager.getLoginUser({
-                        email: this.usernameOrEmail,
-                        password: this.password
-                    });
-                } else {
-                    RequestManager.getLoginUser({
-                        username: this.usernameOrEmail,
-                        password: this.password
-                    });
+        login(): void {
+
+            const onResponse = (r: AxiosResponse<any>) => {
+                if(UserManager.instance.currentUser != undefined)
+                    this.$router.push({ name: 'dashboard' });
+                else {
+                    this.badInputMessage = "Credenciales inválidas. Revise su usuario y contraseña."
+                    this.badLogin = true;
                 }
-                // console.log('password: ' + this.password);
-                // this.$router.push({ name: 'dashboard' });
-          }
+            };
+
+            const userData: any = { password: this.password };
+            if (!emailPattern.test(this.usernameOrEmail)) userData.username = this.usernameOrEmail;
+            else userData.email = this.usernameOrEmail;
+            RequestManager.getLoginUser(userData, onResponse);
+        }
     }
 </script>
 
