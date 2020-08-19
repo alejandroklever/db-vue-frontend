@@ -1,11 +1,18 @@
-import {Article, objectToCamelCase, toCamelCase, toSnakeCase, User} from "@/scripts/Models";
+import {
+  Article,
+  objectToCamelCase,
+  toCamelCase,
+  toSnakeCase,
+  User
+} from "@/scripts/Models";
 
 export default class UserManager {
   private static _instance?: UserManager;
 
   currentUser?: User;
+  authorID?: number;
+  refereeID?: number;
   userArticles?: Article[];
-  isAuthor?: boolean;
   isReferee?: boolean;
   institution?: string;
   ORCID?: number;
@@ -20,7 +27,6 @@ export default class UserManager {
   }
 
   static setUser(data: any): User {
-    return this.instance.currentUser = new User(objectToCamelCase(data));
+    return (this.instance.currentUser = new User(objectToCamelCase(data)));
   }
-  
 }
