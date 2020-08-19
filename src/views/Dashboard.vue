@@ -137,7 +137,7 @@
                 { text: 'Fecha Inicial', value: 'start_date' },
                 { text: 'Fecha Final', value: 'end_date' },
                 ],
-                tableData: RequestManager.getArticleList(),
+                // tableData: RequestManager.getArticleList(),
             }
         }
     }
