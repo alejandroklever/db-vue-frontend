@@ -1,17 +1,17 @@
 <template>
-  <v-app>
-      <router-view/>
-  </v-app>
+    <v-app>
+        <router-view />
+    </v-app>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue'
 
 export default Vue.extend({
-  name: "App",
+    name: 'App',
 
-  data: () => ({
-    //
-  })
-});
+    data: () => ({
+        //
+    }),
+})
 </script>
