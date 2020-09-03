@@ -52,7 +52,7 @@ export default class RequestManager {
 
         const url = this.addParamsToUrl(this.apiUrl + 'author', {
             many: false,
-            user__id: userId,
+            "user__id": userId,
         })
         console.log(url)
         axios
@@ -71,25 +71,22 @@ export default class RequestManager {
             })
     }
 
-    static async getArticleListUtils(list: object[], page: number) {
+    static async getArticleListUtils(list: object[], _page: number) {
         const currentUserId =
             UserManager.instance.currentUser == undefined
                 ? 1
                 : UserManager.instance.currentUser.id
-
+        const url = this.addParamsToUrl(this.apiUrl + 'participation', {
+            "page": _page,
+            "user__id": currentUserId,
+        }) 
+        let nextPage = false
         await axios
-            .get(this.apiUrl + `participation/?page=${page}`)
+            .get(url)
             .then(response => {
-                if (response.data.next != null) {
-                    for (const item of response.data.results) {
-                        if (item.author.user.id == currentUserId)
-                            list.push(item.article)
-                    }
-                    this.getArticleListUtils(list, page + 1)
-                } else {
-                    for (const item of response.data.results) {
-                        if (item.author.user.id == 1) list.push(item.article)
-                    }
+                nextPage = !!response.data.next
+                for (const item of response.data.results) {
+                    list.push(item.article)
                 }
             })
             .catch(reason => {
@@ -97,9 +94,9 @@ export default class RequestManager {
             })
     }
 
-    static getArticleList() {
+    static getArticleList(page: number) {
         const list: object[] = []
-        this.getArticleListUtils(list, 1)
+        this.getArticleListUtils(list, page)
         return list
     }
 
@@ -117,5 +114,27 @@ export default class RequestManager {
         return value == undefined
             ? url
             : url + (url.endsWith('?') ? '' : '&') + `${param}=${value}`
+    }
+    
+    static async nextPageAvailable(list: any[], _page: number) {
+        const currentUserId =
+            UserManager.instance.currentUser == undefined
+                ? 1
+                : UserManager.instance.currentUser.id
+        const url = 
+            RequestManager.addParamsToUrl(this.apiUrl + 'participation', {
+            "page": _page,
+            "user__id": currentUserId,
+        })
+        await axios
+            .get(url)
+            .then(response => {
+                if (response.data.count > _page * 10){
+                    list.push(true)
+                }
+            })
+            .catch(reason => {
+                console.log(reason)
+            })
     }
 }

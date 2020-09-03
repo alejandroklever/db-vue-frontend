@@ -60,28 +60,82 @@
                 fluid
             >
                 <div v-if="showArticleList">
-                    <v-simple-table class="center absolute">
-                        <template v-slot:default>
-                            <thead>
-                                <tr>
-                                    <th class="text-left">Titulo</th>
-                                    <th class="text-left">Palabras Claves</th>
-                                    <th class="text-left">Evaluacion</th>
-                                    <th class="text-left">Fecha Inicial</th>
-                                    <th class="text-left">Fecha Final</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="item in tableData" :key="item.name">
-                                    <td>{{ item.title }}</td>
-                                    <td>{{ item.keywords }}</td>
-                                    <td>{{ item.evaluation }}</td>
-                                    <td>{{ item.start_date }}</td>
-                                    <td>{{ item.end_date }}</td>
-                                </tr>
-                            </tbody>
-                        </template>
-                    </v-simple-table>
+                    <v-btn 
+                        v-if="notFirstPage"
+                        class="ma-2" 
+                        color="blue accent-4" 
+                        dark
+                        @click="preview(getArticleList)"
+                    >
+                        <v-icon dark left>mdi-arrow-left</v-icon>Anterior
+                    </v-btn>
+                    <v-btn 
+                        v-else
+                        class="ma-2" 
+                        color="blue accent-4" 
+                        dark
+                        outlined
+                    >
+                        <v-icon dark left>mdi-arrow-left</v-icon>Anterior
+                    </v-btn>
+                    <v-btn 
+                        v-if="nextPage.length > 0"
+                        class="ma-2" 
+                        color="blue accent-4" 
+                        dark
+                        @click="next(getArticleList)"
+                        >
+                        <v-icon dark left>mdi-arrow-right</v-icon>Siguiente
+                    </v-btn>
+                    <v-btn 
+                        v-else
+                        class="ma-2" 
+                        color="blue accent-4" 
+                        dark
+                        outlined
+                        >
+                        <v-icon dark left>mdi-arrow-right</v-icon>Siguiente
+                    </v-btn>
+                    <v-row>
+                        <v-col
+                            v-for="item in articleList"
+                            :key="item.name"
+                            cols="12"
+                            md="3"
+                        >
+                            <v-card
+                                class="mx-auto"
+                                style=" padding-left: 2rem; padding-right: 2rem;"
+                                max-width="344"
+                                shaped=true
+                                elevation="6"
+                            >
+                                <v-card-text>
+                                <p class="display-1 text--primary">
+                                    {{ item.title }} 
+                                </p>
+                                <div><strong>Palabras Claves</strong></div>
+                                <p class="text--primary">
+                                    {{ item.keywords }}
+                                </p>
+                                
+                                <div><strong>Evaluación</strong></div>
+                                <p class="text--primary">
+                                    {{ item.evaluation }}
+                                </p>
+                                
+                                </v-card-text>
+                                <v-card-actions>
+                                <v-btn
+                                    text
+                                    color="blue accent-4"
+                                >
+                                    Ver
+                                </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-col>
+                    </v-row>
                 </div>
             </v-container>
         </v-main>
@@ -104,43 +158,52 @@ export default class Dashboard extends Vue {
     showPhotos = false
     showAbout = false
 
+    page = 1
+    articleList: any[] = []
+    notFirstPage = true
+    nextPage: any[] = []
+
     private items = [
         { title: 'Dashboard', icon: 'mdi-view-dashboard', action: 1 },
         { title: 'Artículos', icon: 'mdi-file-document-outline', action: 2 },
-        {
-            title: 'Revision',
-            icon: 'mdi-file-document-edit-outline',
-            action: 3,
-        },
+        { title: 'Revision', icon: 'mdi-file-document-edit-outline', action: 3},
         { title: 'Photos', icon: 'mdi-image', action: 4 },
         { title: 'About', icon: 'mdi-help-box', action: 5 },
     ]
 
     action(item: number) {
         this.showAbout = this.showArticleList = this.showDashboard = this.showPhotos = this.showRevList = false
+        this.notFirstPage = true
+        this.page = 1
         if (item == 1) this.showDashboard = true
-        else if (item == 2) this.showArticleList = true
+        else if (item == 2){
+            this.showArticleList = true
+            if (this.page == 1) this.notFirstPage = false
+            this.getArticleList(this.page)
+        }
         else if (item == 3) this.showRevList = true
         else if (item == 4) this.showPhotos = true
         else this.showAbout = true
     }
 
-    data() {
-        return {
-            headers: [
-                {
-                    text: 'Listado de Articulos (Nombre)',
-                    value: 'title',
-                    align: 'start',
-                },
-                { text: 'Id Del trabajo', value: 'id' },
-                { text: 'Palabras Claves', value: 'keywords' },
-                { text: 'Evaluacion', value: 'evaluation' },
-                { text: 'Fecha Inicial', value: 'start_date' },
-                { text: 'Fecha Final', value: 'end_date' },
-            ],
-            tableData: RequestManager.getArticleList(),
-        }
+    getArticleList(page: number){
+        this.articleList = RequestManager.getArticleList(page)
+        RequestManager.nextPageAvailable(this.nextPage, page)
+    }
+
+    next(method: any){
+        this.page += 1
+        this.nextPage = []
+        this.notFirstPage = this.page != 1 
+        method(this.page)
+    }
+
+    preview(method: any){
+        this.page -= 1
+        this.nextPage = []        
+        this.notFirstPage = this.page != 1 
+        method(this.page)
     }
 }
 </script>
+    
