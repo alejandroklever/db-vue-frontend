@@ -15,9 +15,7 @@ export default class UserManager {
     private constructor() {}
 
     static get instance(): UserManager {
-        return UserManager._instance == undefined
-            ? (UserManager._instance = new UserManager())
-            : UserManager._instance
+        return UserManager._instance == undefined ? (UserManager._instance = new UserManager()) : UserManager._instance
     }
 
     static setUser(data: any): User {

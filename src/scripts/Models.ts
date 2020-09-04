@@ -2,11 +2,7 @@ export function toCamelCase(s: string): string {
     const stringArray: string[] = s.split('')
 
     stringArray.forEach(
-        (value, index, array) =>
-            (array[index] =
-                index - 1 > 0 && array[index - 1] == '_'
-                    ? value.toUpperCase()
-                    : value)
+        (value, index, array) => (array[index] = index - 1 > 0 && array[index - 1] == '_' ? value.toUpperCase() : value)
     )
 
     return stringArray.filter(value => value != '_').join('')
@@ -26,17 +22,13 @@ export function toSnakeCase(s: string): string {
 
 export function objectToSnakeCase(data: any): any {
     const newData: any = {}
-    Object.keys(data).forEach(
-        value => (newData[toSnakeCase(value)] = data[value])
-    )
+    Object.keys(data).forEach(value => (newData[toSnakeCase(value)] = data[value]))
     return newData
 }
 
 export function objectToCamelCase(data: any): any {
     const newData: any = {}
-    Object.keys(data).forEach(
-        value => (newData[toCamelCase(value)] = data[value])
-    )
+    Object.keys(data).forEach(value => (newData[toCamelCase(value)] = data[value]))
     return newData
 }
 
@@ -46,8 +38,7 @@ export class Model {
 
     constructor(object: any) {
         const keys: string[] = Object.keys(object)
-        for (let i = 0; i < keys.length; i++)
-            (this as any)[toCamelCase(keys[i])] = object[keys[i]]
+        for (let i = 0; i < keys.length; i++) (this as any)[toCamelCase(keys[i])] = object[keys[i]]
     }
 }
 

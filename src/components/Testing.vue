@@ -10,11 +10,7 @@
 
                 <form v-on:submit.prevent="AddPerson">
                     <label>
-                        <input
-                            type="text"
-                            v-model="user.name"
-                            placeholder="name"
-                        />
+                        <input type="text" v-model="user.name" placeholder="name" />
                     </label>
                     <button type="submit">Add</button>
                 </form>
