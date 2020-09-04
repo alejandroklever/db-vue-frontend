@@ -71,17 +71,19 @@ export default class RequestManager {
             })
     }
 
-    static async getArticleListUtils(list: object[], _page: number) {
+    static getArticleList(page: number) {
+        const list: any[] = []
+
         const currentUserId =
             UserManager.instance.currentUser == undefined
                 ? 1
                 : UserManager.instance.currentUser.id
         const url = this.addParamsToUrl(this.apiUrl + 'participation', {
-            "page": _page,
+            "page": page,
             "user__id": currentUserId,
-        }) 
+        })
         let nextPage = false
-        await axios
+        axios
             .get(url)
             .then(response => {
                 nextPage = !!response.data.next
@@ -92,11 +94,7 @@ export default class RequestManager {
             .catch(reason => {
                 console.log(reason)
             })
-    }
 
-    static getArticleList(page: number) {
-        const list: object[] = []
-        this.getArticleListUtils(list, page)
         return list
     }
 
