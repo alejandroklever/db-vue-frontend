@@ -16,8 +16,7 @@
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.4.2",
     "vue-router": "^3.2.0",
-    "vuetify": "^2.2.11",
-    "vuex": "^3.4.0"
+    "vuetify": "^2.2.11"
   },
   "devDependencies": {
     "@mdi/font": "^5.5.55",
@@ -68,6 +67,7 @@
     "trailingComma": "es5",
     "tabWidth": 4,
     "semi": false,
-    "singleQuote": true
+    "singleQuote": true,
+    "printWidth": 120
   }
 }

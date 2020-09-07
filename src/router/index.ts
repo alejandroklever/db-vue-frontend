@@ -5,16 +5,13 @@ import Login from '@/views/login/Login.vue'
 import SignUp from '@/views/login/SignUp.vue'
 import Dashboard from '@/views/Dashboard.vue'
 
-import HelloWorld from '@/components/HelloWorld.vue'
-import Testing from '@/components/Testing.vue'
-
 Vue.use(VueRouter)
 
 const routes: RouteConfig[] = [
     {
         path: '/',
-        name: 'hello_world',
-        component: HelloWorld,
+        name: 'dashboard',
+        component: Dashboard,
     },
     {
         path: '/login',
@@ -25,16 +22,6 @@ const routes: RouteConfig[] = [
         path: '/sign-up',
         name: 'sign-up',
         component: SignUp,
-    },
-    {
-        path: '/dashboard',
-        name: 'dashboard',
-        component: Dashboard,
-    },
-    {
-        path: '/testing',
-        name: 'testing',
-        component: Testing,
     },
 ]
 

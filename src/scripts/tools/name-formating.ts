@@ -1,3 +1,11 @@
+function isLetter(s: string): boolean {
+    return (
+        s.length == 1 &&
+        ((s == s.toUpperCase() && s != s.toLowerCase()) ||
+            (s != s.toUpperCase() && s == s.toLowerCase()))
+    )
+}
+
 export function toCamelCase(s: string): string {
     const stringArray: string[] = s.split('')
 
@@ -17,7 +25,7 @@ export function toSnakeCase(s: string): string {
     const stringArray: string[] = s.split('')
 
     stringArray.forEach(value => {
-        if (value === value.toUpperCase()) result.push('_')
+        if (isLetter(s) && value == value.toUpperCase()) result.push('_')
         result.push(value.toLowerCase())
     })
 
@@ -38,40 +46,4 @@ export function objectToCamelCase(data: any): any {
         value => (newData[toCamelCase(value)] = data[value])
     )
     return newData
-}
-
-export class Model {
-    //UN OBJETO CUALQUIERA CON LAS QUE TENGO, SI UNA NO MATCH NO SE PONE, NO le importa a js no explota
-    id!: number
-
-    constructor(object: any) {
-        const keys: string[] = Object.keys(object)
-        for (let i = 0; i < keys.length; i++)
-            (this as any)[toCamelCase(keys[i])] = object[keys[i]]
-    }
-}
-
-export class User extends Model {
-    username!: string
-    firstName!: string
-    lastName!: string
-    email!: string
-    isSuperuser!: boolean
-}
-
-export class Author extends Model {
-    institution!: string
-    ORCID!: number
-}
-
-export class Referee extends Model {
-    speciality!: string
-}
-
-export class Article extends Model {
-    title!: string
-    keywords!: string[]
-    mcc!: string
-    startDate!: string
-    endDate!: string
 }

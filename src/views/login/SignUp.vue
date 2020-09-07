@@ -10,25 +10,13 @@
                     <v-spacer></v-spacer>
 
                     <v-col class="offset-1" cols="10">
-                        <v-text-field
-                            label="Nombre de Usuario"
-                            v-model="user.username"
-                            rounded
-                            outlined
-                        ></v-text-field>
-                        <v-text-field
-                            label="Email"
-                            v-model="user.email"
-                            rounded
-                            outlined
-                        ></v-text-field>
+                        <v-text-field label="Nombre de Usuario" v-model="user.username" rounded outlined></v-text-field>
+                        <v-text-field label="Email" v-model="user.email" rounded outlined></v-text-field>
 
                         <v-text-field
                             label="Contraseña"
                             v-model="user.password"
-                            :append-icon="
-                                showPassword ? 'mdi-eye' : 'mdi-eye-off'
-                            "
+                            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                             :type="showPassword ? 'text' : 'password'"
                             rounded
                             outlined
@@ -37,9 +25,7 @@
                         <v-text-field
                             label="Repita la contraseña"
                             v-model="password2"
-                            :append-icon="
-                                showPassword2 ? 'mdi-eye' : 'mdi-eye-off'
-                            "
+                            :append-icon="showPassword2 ? 'mdi-eye' : 'mdi-eye-off'"
                             :type="showPassword2 ? 'text' : 'password'"
                             rounded
                             outlined
@@ -47,9 +33,7 @@
                         ></v-text-field>
                         <v-fade-transition origin="center center">
                             <v-row justify="center" v-show="badRegister">
-                                <label class="red--text"
-                                    >Credenciales invalidas</label
-                                >
+                                <label class="red--text">Credenciales invalidas</label>
                             </v-row>
                         </v-fade-transition>
                     </v-col>
@@ -57,20 +41,10 @@
                     <v-col cols="12">
                         <v-row align="end" justify="center">
                             <v-card-actions>
-                                <v-btn
-                                    width="150"
-                                    rounded
-                                    color="primary"
-                                    @click="createUser()"
-                                >
+                                <v-btn width="150" rounded color="primary" @click="createUser()">
                                     <span>Registrar</span>
                                 </v-btn>
-                                <v-btn
-                                    width="150"
-                                    rounded
-                                    color="secondary"
-                                    :to="{ name: 'login' }"
-                                >
+                                <v-btn width="150" rounded color="secondary" :to="{ name: 'login' }">
                                     <span>Cancelar</span>
                                 </v-btn>
                             </v-card-actions>
@@ -85,8 +59,9 @@
 <script lang="ts">
 /* eslint-disable */
 import { Component, Vue } from 'vue-property-decorator'
-import { emailPattern } from '@/scripts/Constants'
-import RequestManager from '@/scripts/RequestManager'
+import { emailPattern } from '@/scripts/tools/constants'
+import RequestManager from '@/scripts/request-manager'
+import DataManager from '../../scripts/data-manager'
 
 @Component
 export default class SignUp extends Vue {
@@ -102,16 +77,17 @@ export default class SignUp extends Vue {
     }
 
     createUser(): void {
-        let matchedPasswords = this.user.password == this.password2
-        let validEmail = emailPattern.test(this.user.email)
-
-        if (matchedPasswords && validEmail) {
+        if (this.user.password == this.password2 && emailPattern.test(this.user.email)) {
             this.badRegister = false
-            RequestManager.postCreateUser(this.user)
-            // this.$router.push({ name: 'dashboard' });
-        } else {
-            this.badRegister = true
-        }
+            RequestManager.postCreateUser(
+                this.user,
+                r => {
+                    DataManager.setUser(r.data)
+                    this.$router.push({ name: 'dashboard' })
+                },
+                r => console.log(r)
+            )
+        } else this.badRegister = true
     }
 }
 </script>
