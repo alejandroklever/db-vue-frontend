@@ -32,8 +32,8 @@
                             @click:append="showPassword2 = !showPassword2"
                         ></v-text-field>
                         <v-fade-transition origin="center center">
-                            <v-row justify="center" v-show="badRegister">
-                                <label class="red--text">Credenciales invalidas</label>
+                            <v-row justify="center" v-show="error">
+                                <label class="red--text">{{ errorMessage }}</label>
                             </v-row>
                         </v-fade-transition>
                     </v-col>
@@ -61,13 +61,15 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { emailPattern } from '@/scripts/tools/constants'
 import RequestManager from '@/scripts/request-manager'
-import DataManager from '../../scripts/data-manager'
+import DataManager from '@/scripts/data-manager'
 
 @Component
 export default class SignUp extends Vue {
+    private errorMessage = 'Credenciales inválidas'
+
     private showPassword = false
     private showPassword2 = false
-    private badRegister = false
+    private error = false
     private password2 = ''
 
     private user = {
@@ -77,17 +79,28 @@ export default class SignUp extends Vue {
     }
 
     createUser(): void {
-        if (this.user.password == this.password2 && emailPattern.test(this.user.email)) {
-            this.badRegister = false
-            RequestManager.postCreateUser(
-                this.user,
-                r => {
-                    DataManager.setUser(r.data)
-                    this.$router.push({ name: 'dashboard' })
-                },
-                r => console.log(r)
-            )
-        } else this.badRegister = true
+        this.error = false
+        if (this.user.password != this.password2) {
+            this.error = true
+            return
+        }
+
+        if (emailPattern.test(this.user.email)) {
+            this.error = false
+            return
+        }
+
+        RequestManager.postCreateUser(
+            this.user,
+            r => {
+                DataManager.setUser(r.data)
+                this.$router.push({ name: 'dashboard' })
+            },
+            r => {
+                this.errorMessage = 'El usuario ya usuario existente.'
+                this.error = true
+            }
+        )
     }
 }
 </script>

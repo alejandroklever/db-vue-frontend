@@ -1,15 +1,14 @@
-import { Article, User } from '@/scripts/models'
-import { objectToCamelCase } from '@/scripts/tools/name-formating'
+import { User } from '@/scripts/models'
 import RequestManager from '@/scripts/request-manager'
 
 enum State {
     Logged,
-    NotLogged
+    NotLogged,
 }
 
 export default class DataManager {
     private static _instance?: DataManager
-    
+
     currentUser?: User
 
     // eslint-disable-next-line
@@ -20,7 +19,9 @@ export default class DataManager {
     }
 
     static setUser(data: any): User {
-        localStorage.setItem('token', data.token)
+        if (!this.token)
+            if (data.token) localStorage.setItem('token', data.token)
+            else return new User({})
         return (this.instance.currentUser = new User(data))
     }
 
@@ -33,6 +34,6 @@ export default class DataManager {
     }
 
     static getUserRequest() {
-        RequestManager.getUser({ token: this.token })
+        RequestManager.getUser({ token: this.token }, undefined, r => console.log(r))
     }
 }

@@ -13,47 +13,49 @@
 
                     <v-spacer></v-spacer>
 
-                    <v-col class="offset-1" cols="10">
-                        <v-text-field
-                            label="Nombre de Usuario"
-                            v-model="usernameOrEmail"
-                            rounded
-                            outlined
-                        ></v-text-field>
+                    <v-form @submit.prevent="login">
+                        <v-col class="offset-1" cols="10">
+                            <v-text-field
+                                label="Nombre de Usuario"
+                                v-model="usernameOrEmail"
+                                rounded
+                                outlined
+                            ></v-text-field>
 
-                        <v-text-field
-                            label="Contraseña"
-                            v-model="password"
-                            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                            :type="showPassword ? 'text' : 'password'"
-                            rounded
-                            outlined
-                            @click:append="showPassword = !showPassword"
-                        ></v-text-field>
+                            <v-text-field
+                                label="Contraseña"
+                                v-model="password"
+                                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                                :type="showPassword ? 'text' : 'password'"
+                                rounded
+                                outlined
+                                @click:append="showPassword = !showPassword"
+                            ></v-text-field>
 
-                        <v-row justify="center">
-                            <v-checkbox label="Administrdor" v-model="isAdmin"> </v-checkbox>
-                        </v-row>
-
-                        <v-fade-transition origin="center center">
-                            <v-row justify="center" v-show="badLogin">
-                                <label class="red--text">{{ this.badInputMessage }}</label>
+                            <v-row justify="center">
+                                <v-checkbox label="Administrdor" v-model="isAdmin"> </v-checkbox>
                             </v-row>
-                        </v-fade-transition>
-                    </v-col>
 
-                    <v-col cols="12">
-                        <v-row align="end" justify="center">
-                            <v-card-actions>
-                                <v-btn rounded color="primary" @click="login()">
-                                    <span>Autenticarse</span>
-                                </v-btn>
-                                <v-btn rounded color="secondary" :to="{ name: 'sign-up' }">
-                                    <span>Registrarse</span>
-                                </v-btn>
-                            </v-card-actions>
-                        </v-row>
-                    </v-col>
+                            <v-fade-transition origin="center center">
+                                <v-row justify="center" v-show="badLogin">
+                                    <label class="red--text">{{ this.errorMessage }}</label>
+                                </v-row>
+                            </v-fade-transition>
+                        </v-col>
+
+                        <v-col cols="12">
+                            <v-row align="end" justify="center">
+                                <v-card-actions>
+                                    <v-btn rounded color="primary" type="submit">
+                                        <span>Autenticarse</span>
+                                    </v-btn>
+                                    <v-btn rounded color="secondary" :to="{ name: 'sign-up' }">
+                                        <span>Registrarse</span>
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-row>
+                        </v-col>
+                    </v-form>
                 </v-card>
             </v-col>
         </v-row>
@@ -69,7 +71,7 @@ import DataManager from '../../scripts/data-manager'
 
 @Component
 export default class Login extends Vue {
-    private badInputMessage = ''
+    private errorMessage = ''
     private badLogin = false
     private showPassword = false
     private isAdmin = false
@@ -83,10 +85,17 @@ export default class Login extends Vue {
             this.$router.push({ name: 'dashboard' })
         }
 
+        const onCatch = (r: any) => {
+            this.errorMessage = 'Usuario o contraseña incorrectos'
+            this.password = ''
+            this.badLogin = true
+            console.log(r)
+        }
+
         const userData: any = { password: this.password }
         if (!emailPattern.test(this.usernameOrEmail)) userData.username = this.usernameOrEmail
         else userData.email = this.usernameOrEmail
-        RequestManager.postLoginUser(userData, onResponse)
+        RequestManager.postLoginUser(userData, onResponse, onCatch)
     }
 }
 </script>

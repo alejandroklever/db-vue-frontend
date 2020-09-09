@@ -21,7 +21,7 @@
 
                 <v-divider></v-divider>
 
-                <v-list-item v-for="item in items" v-bind:key="item.title">
+                <v-list-item v-for="item in items" v-bind:key="item.title" @click="item.action">
                     <v-list-item-icon>
                         <v-icon>{{ item.icon }}</v-icon>
                     </v-list-item-icon>
@@ -33,59 +33,7 @@
             </v-list>
         </v-navigation-drawer>
         <v-main>
-            <!--            <v-container class="fill-height" style="padding-top: 20px; height: 100%" fluid>-->
-            <!--                <div v-if="showArticleList">-->
-            <!--                    <v-btn v-if="notFirstPage" class="ma-2" color="blue accent-4" dark @click="preview(getArticleList)">-->
-            <!--                        <v-icon dark left>mdi-arrow-left</v-icon>Anterior-->
-            <!--                    </v-btn>-->
-            <!--                    <v-btn v-else class="ma-2" color="blue accent-4" dark outlined>-->
-            <!--                        <v-icon dark left>mdi-arrow-left</v-icon>Anterior-->
-            <!--                    </v-btn>-->
-            <!--                    <v-btn-->
-            <!--                        v-if="nextPage.length > 0"-->
-            <!--                        class="ma-2"-->
-            <!--                        color="blue accent-4"-->
-            <!--                        dark-->
-            <!--                        @click="next(getArticleList)"-->
-            <!--                    >-->
-            <!--                        <v-icon dark left>mdi-arrow-right</v-icon>Siguiente-->
-            <!--                    </v-btn>-->
-            <!--                    <v-btn v-else class="ma-2" color="blue accent-4" dark outlined>-->
-            <!--                        <v-icon dark left>mdi-arrow-right</v-icon>Siguiente-->
-            <!--                    </v-btn>-->
-            <!--                    <v-row>-->
-            <!--                        <v-col v-for="item in articleList" :key="item.name" cols="12" md="3">-->
-            <!--                            <v-card-->
-            <!--                                class="mx-auto"-->
-            <!--                                style=" padding-left: 2rem; padding-right: 2rem;"-->
-            <!--                                max-width="344"-->
-            <!--                                shaped="true"-->
-            <!--                                elevation="6"-->
-            <!--                            >-->
-            <!--                                <v-card-text>-->
-            <!--                                    <p class="display-1 text&#45;&#45;primary">-->
-            <!--                                        {{ item.title }}-->
-            <!--                                    </p>-->
-            <!--                                    <div><strong>Palabras Claves</strong></div>-->
-            <!--                                    <p class="text&#45;&#45;primary">-->
-            <!--                                        {{ item.keywords }}-->
-            <!--                                    </p>-->
-
-            <!--                                    <div><strong>Evaluación</strong></div>-->
-            <!--                                    <p class="text&#45;&#45;primary">-->
-            <!--                                        {{ item.evaluation }}-->
-            <!--                                    </p>-->
-            <!--                                </v-card-text>-->
-            <!--                                <v-card-actions>-->
-            <!--                                    <v-btn text color="blue accent-4">-->
-            <!--                                        Ver-->
-            <!--                                    </v-btn>-->
-            <!--                                </v-card-actions>-->
-            <!--                            </v-card>-->
-            <!--                        </v-col>-->
-            <!--                    </v-row>-->
-            <!--                </div>-->
-            <!--            </v-container>-->
+            <user-configuration v-if="editProfile"></user-configuration>
         </v-main>
     </div>
 </template>
@@ -94,9 +42,14 @@
 /* eslint-disable */
 import { Component, Vue } from 'vue-property-decorator'
 import DataManager from '../scripts/data-manager'
+import GenericMainVue from '@/views/GenericMainVue.vue'
+import UserConfigurationView from '@/views/UserConfigurationView.vue'
 import RequestManager from '@/scripts/request-manager'
 
-@Component
+
+@Component({
+    components: { 'user-configuration': UserConfigurationView },
+})
 export default class Dashboard extends Vue {
     private permanent = true
     private miniVariant = false
@@ -105,21 +58,22 @@ export default class Dashboard extends Vue {
     private showRevList = false
     private showPhotos = false
     private showAbout = false
+    private editProfile = false
 
     private items = [
-        { title: 'Dashboard', icon: 'mdi-view-dashboard', action: 1 },
-        { title: 'Artículos', icon: 'mdi-file-document-outline', action: 2 },
-        { title: 'Revision', icon: 'mdi-file-document-edit-outline', action: 3 },
-        { title: 'Photos', icon: 'mdi-image', action: 4 },
-        { title: 'About', icon: 'mdi-help-box', action: 5 },
+        { title: 'Dashboard', icon: 'mdi-view-dashboard', action: () => (0) },
+        { title: 'Artículos', icon: 'mdi-file-document-outline', action: () => (1) },
+        { title: 'Revision', icon: 'mdi-file-document-edit-outline', action: () => (2) },
+        { title: 'Photos', icon: 'mdi-image', action: () => (3) },
+        { title: 'About', icon: 'mdi-help-box', action: () => (4) },
     ]
 
     created() {
-        if (!DataManager.token) {
-            this.$router.push('Login')
-        } else if (!DataManager.user) {
-            DataManager.getUserRequest()
-        }
+        if (!DataManager.token) this.$router.push('Login')
+        else if (!DataManager.user) RequestManager.getUserFromToken(DataManager.token, r => {
+          DataManager.setUser(r.data)
+          this.editProfile = true
+        })
     }
 }
 </script>

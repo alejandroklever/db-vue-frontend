@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
+import DataManager from '@/scripts/data-manager'
 
 type OnResponse = (r: AxiosResponse) => void
 type OnCatch = (r: any) => void
@@ -21,7 +22,15 @@ export default class RequestManager {
     }
 
     static getUser(params: any, onResponse?: OnResponse, onCatch?: OnCatch): void {
-        const url = this.addParamsToUrl(this.apiUrl + 'user/', params)
+        const url = this.addParamsToUrl(this.apiUrl + 'user', params)
+        axios
+            .get(url)
+            .then(response => onResponse?.(response))
+            .catch(reason => onCatch?.(reason))
+    }
+
+    static getUserFromToken(key: string, onResponse?: OnResponse, onCatch?: OnCatch) {
+        const url = this.apiUrl + `token/${key}/`
         axios
             .get(url)
             .then(response => onResponse?.(response))
