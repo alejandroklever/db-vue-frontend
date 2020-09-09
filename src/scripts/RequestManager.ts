@@ -5,10 +5,6 @@ import { objectToSnakeCase, toSnakeCase } from '@/scripts/Models'
 export default class RequestManager {
     static apiUrl = 'http://localhost:8000/revista.cientifica/api/v1/'
 
-    static sleep(ms: number) {
-        return new Promise(resolve => setTimeout(resolve, ms))
-    }
-
     static postCreateUser(user: any): void {
         axios
             .post(this.apiUrl + 'user/', objectToSnakeCase(user))
@@ -45,7 +41,7 @@ export default class RequestManager {
 
         const url = this.addParamsToUrl(this.apiUrl + 'author', {
             many: false,
-            user__id: userId,
+            "user__id": userId,
         })
         console.log(url)
         axios
@@ -64,25 +60,26 @@ export default class RequestManager {
             })
     }
 
-    static getArticleList(page: number) {
+    static getArticleList(page: number, onResponse?: (r: AxiosResponse) => void, onCatch?: (r: any) => void) {
         const list: any[] = []
 
         const currentUserId = UserManager.instance.currentUser == undefined ? 1 : UserManager.instance.currentUser.id
         const url = this.addParamsToUrl(this.apiUrl + 'participation', {
-            page: page,
-            user__id: currentUserId,
+            "page": page,
+            "user__id": currentUserId,
         })
-        let nextPage = false
         axios
             .get(url)
             .then(response => {
-                nextPage = !!response.data.next
-                for (const item of response.data.results) {
-                    list.push(item.article)
+                if(onResponse) onResponse(response)
+                else{
+                    for (const item of response.data.results) {
+                        list.push(item.article)
+                    } 
                 }
             })
             .catch(reason => {
-                console.log(reason)
+                if (onCatch) onCatch(reason)
             })
 
         return list
@@ -101,21 +98,19 @@ export default class RequestManager {
         return value == undefined ? url : url + (url.endsWith('?') ? '' : '&') + `${param}=${value}`
     }
 
-    static async nextPageAvailable(list: any[], _page: number) {
+    static nextPageAvailable(_page: number, onResponse?: (r: AxiosResponse) => void, onCatch?: (r: any) => void) {
         const currentUserId = UserManager.instance.currentUser == undefined ? 1 : UserManager.instance.currentUser.id
         const url = RequestManager.addParamsToUrl(this.apiUrl + 'participation', {
             page: _page,
-            user__id: currentUserId,
+            "user__id": currentUserId,
         })
-        await axios
+        axios
             .get(url)
             .then(response => {
-                if (response.data.count > _page * 10) {
-                    list.push(true)
-                }
+                if(onResponse) onResponse(response)
             })
             .catch(reason => {
-                console.log(reason)
+                if (onCatch) onCatch(reason)
             })
     }
 }

@@ -35,53 +35,24 @@
         <v-main>
             <v-container class="fill-height" style="padding-top: 20px; height: 100%" fluid>
                 <div v-if="showArticleList">
-                    <v-btn v-if="notFirstPage" class="ma-2" color="blue accent-4" dark @click="preview(getArticleList)">
-                        <v-icon dark left>mdi-arrow-left</v-icon>Anterior
-                    </v-btn>
-                    <v-btn v-else class="ma-2" color="blue accent-4" dark outlined>
-                        <v-icon dark left>mdi-arrow-left</v-icon>Anterior
-                    </v-btn>
-                    <v-btn
-                        v-if="nextPage.length > 0"
-                        class="ma-2"
-                        color="blue accent-4"
-                        dark
-                        @click="next(getArticleList)"
-                    >
-                        <v-icon dark left>mdi-arrow-right</v-icon>Siguiente
-                    </v-btn>
-                    <v-btn v-else class="ma-2" color="blue accent-4" dark outlined>
-                        <v-icon dark left>mdi-arrow-right</v-icon>Siguiente
-                    </v-btn>
+                    <!-- BOTONES DE MOVIMIENTO -->
+                    <MoveButtons
+                        :previewAvailable="previewPageAvailable"
+                        :nextAvailable="nextPageAvailable"
+                        :method="getArticleList"
+                        :nextPage="next"
+                        :previewPage="preview"
+                        >
+                    </MoveButtons>
+                    <!-- LISTAR ARTICULOS -->
                     <v-row>
                         <v-col v-for="item in articleList" :key="item.name" cols="12" md="3">
-                            <v-card
-                                class="mx-auto"
-                                style=" padding-left: 2rem; padding-right: 2rem;"
-                                max-width="344"
-                                shaped="true"
-                                elevation="6"
-                            >
-                                <v-card-text>
-                                    <p class="display-1 text--primary">
-                                        {{ item.title }}
-                                    </p>
-                                    <div><strong>Palabras Claves</strong></div>
-                                    <p class="text--primary">
-                                        {{ item.keywords }}
-                                    </p>
-
-                                    <div><strong>Evaluación</strong></div>
-                                    <p class="text--primary">
-                                        {{ item.evaluation }}
-                                    </p>
-                                </v-card-text>
-                                <v-card-actions>
-                                    <v-btn text color="blue accent-4">
-                                        Ver
-                                    </v-btn>
-                                </v-card-actions>
-                            </v-card>
+                            <Card 
+                                :title="item.title"
+                                :keywords="item.keywords"
+                                :evaluation="item.evaluation"
+                                > 
+                            </Card>
                         </v-col>
                     </v-row>
                 </div>
@@ -92,11 +63,15 @@
 
 <script lang="ts">
 /* eslint-disable */
+import { AxiosResponse } from 'axios'
 import { Component, Vue } from 'vue-property-decorator'
 import UserManager from '@/scripts/UserManager'
 import RequestManager from '@/scripts/RequestManager'
 
-@Component
+import  MoveButtons  from '@/components/MoveButtons.vue'
+import  Card  from '@/components/Card.vue'
+
+@Component({components: { MoveButtons, Card },})
 export default class Dashboard extends Vue {
     private permanent = true
     private miniVariant = false
@@ -108,8 +83,8 @@ export default class Dashboard extends Vue {
 
     page = 1
     articleList: any[] = []
-    notFirstPage = true
-    nextPage: any[] = []
+    nextPageAvailable = false
+    previewPageAvailable = false
 
     private items = [
         { title: 'Dashboard', icon: 'mdi-view-dashboard', action: 1 },
@@ -118,38 +93,49 @@ export default class Dashboard extends Vue {
         { title: 'Photos', icon: 'mdi-image', action: 4 },
         { title: 'About', icon: 'mdi-help-box', action: 5 },
     ]
-
+ 
     action(item: number) {
         this.showAbout = this.showArticleList = this.showDashboard = this.showPhotos = this.showRevList = false
-        this.notFirstPage = true
         this.page = 1
+
         if (item == 1) this.showDashboard = true
         else if (item == 2) {
             this.showArticleList = true
-            if (this.page == 1) this.notFirstPage = false
             this.getArticleList(this.page)
-        } else if (item == 3) this.showRevList = true
+        } 
+        else if (item == 3) this.showRevList = true
         else if (item == 4) this.showPhotos = true
         else this.showAbout = true
     }
 
-    getArticleList(page: number) {
-        this.articleList = RequestManager.getArticleList(page)
-        RequestManager.nextPageAvailable(this.nextPage, page)
+    getArticleList(page: number){
+        let onResponse = (r: AxiosResponse<any>) => {
+            for (const item of r.data.results) {
+                this.articleList.push(item.article)
+            } 
+        }
+        RequestManager.getArticleList(page, onResponse);
+
+        onResponse = (r: AxiosResponse<any>) => {
+            this.nextPageAvailable =  r.data.count > page * 10
+        }
+        RequestManager.nextPageAvailable(page, onResponse)
     }
 
     next(method: any) {
         this.page += 1
-        this.nextPage = []
-        this.notFirstPage = this.page != 1
+        this.previewPageAvailable = this.page != 1
+        this.articleList = []
         method(this.page)
     }
 
     preview(method: any) {
         this.page -= 1
-        this.nextPage = []
-        this.notFirstPage = this.page != 1
+        this.previewPageAvailable = this.page != 1
+        this.articleList = []
         method(this.page)
     }
 }
+
 </script>
+
