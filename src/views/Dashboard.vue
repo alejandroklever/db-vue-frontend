@@ -36,23 +36,23 @@
             <v-container class="fill-height" style="padding-top: 20px; height: 100%" fluid>
                 <div v-if="showArticleList">
                     <!-- BOTONES DE MOVIMIENTO -->
-                    <MoveButtons
+                    <Paginator
                         :previewAvailable="previewPageAvailable"
                         :nextAvailable="nextPageAvailable"
                         :method="getArticleList"
                         :nextPage="next"
                         :previewPage="preview"
                         >
-                    </MoveButtons>
+                    </Paginator>
                     <!-- LISTAR ARTICULOS -->
                     <v-row>
                         <v-col v-for="item in articleList" :key="item.name" cols="12" md="3">
-                            <Card 
+                            <Article 
                                 :title="item.title"
                                 :keywords="item.keywords"
                                 :evaluation="item.evaluation"
                                 > 
-                            </Card>
+                            </Article>
                         </v-col>
                     </v-row>
                 </div>
@@ -68,10 +68,10 @@ import { Component, Vue } from 'vue-property-decorator'
 import UserManager from '@/scripts/UserManager'
 import RequestManager from '@/scripts/RequestManager'
 
-import  MoveButtons  from '@/components/MoveButtons.vue'
-import  Card  from '@/components/Card.vue'
+import  Paginator  from '@/components/Paginator.vue'
+import  Article  from '@/components/Article.vue'
 
-@Component({components: { MoveButtons, Card },})
+@Component({components: { Article, Paginator },})
 export default class Dashboard extends Vue {
     private permanent = true
     private miniVariant = false
