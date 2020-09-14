@@ -1,6 +1,6 @@
 <template>
     <v-col>
-        <v-card class="mx-auto">
+        <v-card class="mx-auto" elevation="0">
             <v-row justify="center">
                 <v-card-title>
                     <h2>Información del Usuario</h2>
@@ -76,7 +76,7 @@
                             </v-row>
                         </v-slide-x-transition>
                         <v-card-actions>
-                          <v-btn color="primary">Edtar</v-btn>
+                            <v-btn color="primary">Edtar</v-btn>
                         </v-card-actions>
                     </v-form>
                 </v-col>
