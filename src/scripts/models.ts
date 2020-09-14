@@ -6,7 +6,8 @@ export class Model {
     constructor(object: any) {
         const keys: string[] = Object.keys(object)
         for (let i = 0; i < keys.length; i++) {
-            if (object[keys[i]] == null)
+            // if (object[keys[i]] == null)
+            //     (this as any)[toCamelCase(keys[i])] = object[keys[i]]
             (this as any)[toCamelCase(keys[i])] = object[keys[i]]
         }
     }

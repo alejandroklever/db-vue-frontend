@@ -14,8 +14,8 @@
                     </v-list-item-avatar>
 
                     <v-list-item-content>
-                        <v-list-item-title>Application</v-list-item-title>
-                        <v-list-item-subtitle>Subtext</v-list-item-subtitle>
+                        <v-list-item-title>{{ user.username }}</v-list-item-title>
+                        <v-list-item-subtitle>{{ user.author.institution }}</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -46,7 +46,6 @@ import GenericMainVue from '@/views/GenericMainVue.vue'
 import UserConfigurationView from '@/views/UserConfigurationView.vue'
 import RequestManager from '@/scripts/request-manager'
 
-
 @Component({
     components: { 'user-configuration': UserConfigurationView },
 })
@@ -61,19 +60,26 @@ export default class Dashboard extends Vue {
     private editProfile = false
 
     private items = [
-        { title: 'Dashboard', icon: 'mdi-view-dashboard', action: () => (0) },
-        { title: 'Artículos', icon: 'mdi-file-document-outline', action: () => (1) },
-        { title: 'Revision', icon: 'mdi-file-document-edit-outline', action: () => (2) },
-        { title: 'Photos', icon: 'mdi-image', action: () => (3) },
-        { title: 'About', icon: 'mdi-help-box', action: () => (4) },
+        { title: 'Dashboard', icon: 'mdi-view-dashboard', action: () => 0 },
+        { title: 'Artículos', icon: 'mdi-file-document-outline', action: () => 1 },
+        { title: 'Revision', icon: 'mdi-file-document-edit-outline', action: () => 2 },
+        { title: 'Photos', icon: 'mdi-image', action: () => 3 },
+        { title: 'About', icon: 'mdi-help-box', action: () => 4 },
     ]
 
     created() {
         if (!DataManager.token) this.$router.push('Login')
-        else if (!DataManager.user) RequestManager.getUserFromToken(DataManager.token, r => {
-          DataManager.setUser(r.data)
-          this.editProfile = true
-        })
+        else if (!DataManager.user)
+            RequestManager.getUserFromToken(DataManager.token, r => {
+                DataManager.setUser(r.data.user)
+                console.log('logged user => ', DataManager.user?.username)
+                this.editProfile = true
+            })
+        else this.editProfile = true
+    }
+
+    get user() {
+        return DataManager.user
     }
 }
 </script>

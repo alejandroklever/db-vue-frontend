@@ -18,6 +18,7 @@
                             <v-text-field
                                 label="Nombre de Usuario"
                                 v-model="usernameOrEmail"
+                                :prepend-icon="'mdi-account'"
                                 rounded
                                 outlined
                             ></v-text-field>
@@ -25,6 +26,7 @@
                             <v-text-field
                                 label="Contraseña"
                                 v-model="password"
+                                :prepend-icon="'mdi-lock'"
                                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                                 :type="showPassword ? 'text' : 'password'"
                                 rounded
@@ -47,10 +49,10 @@
                             <v-row align="end" justify="center">
                                 <v-card-actions>
                                     <v-btn rounded color="primary" type="submit">
-                                        <span>Autenticarse</span>
+                                        <span>Autenticar</span>
                                     </v-btn>
                                     <v-btn rounded color="secondary" :to="{ name: 'sign-up' }">
-                                        <span>Registrarse</span>
+                                        <span>Registrar</span>
                                     </v-btn>
                                 </v-card-actions>
                             </v-row>
