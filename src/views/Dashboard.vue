@@ -35,26 +35,7 @@
         <v-main>
             <v-container class="fill-height" style="padding-top: 20px; height: 100%" fluid>
                 <div v-if="showArticleList">
-                    <!-- BOTONES DE MOVIMIENTO -->
-                    <Paginator
-                        :previewAvailable="previewPageAvailable"
-                        :nextAvailable="nextPageAvailable"
-                        :method="getArticleList"
-                        :nextPage="next"
-                        :previewPage="preview"
-                        >
-                    </Paginator>
-                    <!-- LISTAR ARTICULOS -->
-                    <v-row>
-                        <v-col v-for="item in articleList" :key="item.name" cols="12" md="3">
-                            <Article 
-                                :title="item.title"
-                                :keywords="item.keywords"
-                                :evaluation="item.evaluation"
-                                > 
-                            </Article>
-                        </v-col>
-                    </v-row>
+                    <Article></Article>
                 </div>
             </v-container>
         </v-main>
@@ -65,13 +46,10 @@
 /* eslint-disable */
 import { AxiosResponse } from 'axios'
 import { Component, Vue } from 'vue-property-decorator'
-import UserManager from '@/scripts/UserManager'
-import RequestManager from '@/scripts/RequestManager'
 
-import  Paginator  from '@/components/Paginator.vue'
 import  Article  from '@/components/Article.vue'
 
-@Component({components: { Article, Paginator },})
+@Component({components: { Article },})
 export default class Dashboard extends Vue {
     private permanent = true
     private miniVariant = false
@@ -80,11 +58,6 @@ export default class Dashboard extends Vue {
     showRevList = false
     showPhotos = false
     showAbout = false
-
-    page = 1
-    articleList: any[] = []
-    nextPageAvailable = false
-    previewPageAvailable = false
 
     private items = [
         { title: 'Dashboard', icon: 'mdi-view-dashboard', action: 1 },
@@ -96,44 +69,12 @@ export default class Dashboard extends Vue {
  
     action(item: number) {
         this.showAbout = this.showArticleList = this.showDashboard = this.showPhotos = this.showRevList = false
-        this.page = 1
 
         if (item == 1) this.showDashboard = true
-        else if (item == 2) {
-            this.showArticleList = true
-            this.getArticleList(this.page)
-        } 
+        else if (item == 2) this.showArticleList = true
         else if (item == 3) this.showRevList = true
         else if (item == 4) this.showPhotos = true
         else this.showAbout = true
-    }
-
-    getArticleList(page: number){
-        let onResponse = (r: AxiosResponse<any>) => {
-            for (const item of r.data.results) {
-                this.articleList.push(item.article)
-            } 
-        }
-        RequestManager.getArticleList(page, onResponse);
-
-        onResponse = (r: AxiosResponse<any>) => {
-            this.nextPageAvailable =  r.data.count > page * 10
-        }
-        RequestManager.nextPageAvailable(page, onResponse)
-    }
-
-    next(method: any) {
-        this.page += 1
-        this.previewPageAvailable = this.page != 1
-        this.articleList = []
-        method(this.page)
-    }
-
-    preview(method: any) {
-        this.page -= 1
-        this.previewPageAvailable = this.page != 1
-        this.articleList = []
-        method(this.page)
     }
 }
 

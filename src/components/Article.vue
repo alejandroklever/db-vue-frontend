@@ -1,41 +1,84 @@
 <template>
-    <v-card
-        class="mx-auto"
-        style=" padding-left: 2rem; padding-right: 2rem;"
-        max-width="344"
-        shaped="true"
-        elevation="6"
+<div>
+    <v-row
+        justify="center"
         >
-        <v-card-text>
-            <p class="display-1 text--primary">
-                {{ title }}
-            </p>
-            <div><strong>Palabras Claves</strong></div>
-            <p class="text--primary">
-                {{ keywords }}
-            </p>
+        <v-pagination
+            v-model="page"
+            :length="count"
+            :circle="true"
+            :total-visible="10"
+            >
+        </v-pagination>
+    </v-row>
+    <v-row>
+        <v-col v-for="item in articleList" :key="item.name" cols="12" md="3">
+            <v-card
+                class="mx-auto"
+                style=" padding-left: 2rem; padding-right: 2rem;"
+                max-width="344"
+                shaped="true"
+                elevation="6"
+                >
+                <v-card-text>
+                    <p class="display-1 text--primary">
+                        {{ item.title }}
+                    </p>
+                    <div><strong>Palabras Claves</strong></div>
+                    <p class="text--primary">
+                        {{ item.keywords }}
+                    </p>
 
-            <div><strong>Evaluación</strong></div>
-            <p class="text--primary">
-                {{ evaluation }}
-            </p>
-        </v-card-text>
-        <v-card-actions>
-            <v-btn text color="blue accent-4" @click="action">
-                Ver
-            </v-btn>
-        </v-card-actions>
-    </v-card>
+                    <div><strong>Evaluación</strong></div>
+                    <p class="text--primary">
+                        {{ item.evaluation }}
+                    </p>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn text color="blue accent-4" @click="action">
+                        Ver
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-col>
+    </v-row>
+</div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import { AxiosResponse } from 'axios'
+import RequestManager from '@/scripts/RequestManager'
 
 @Component
 export default class Article extends Vue {
-    @Prop() title!: string
-    @Prop() keywords!: string
-    @Prop() evaluation!: string
-    @Prop() action!: string
+    circle = true
+    page = 1
+    count = 0
+    articleList: any[] = []
+
+    action(){
+        this.articleList = []
+        let onResponse = (r: AxiosResponse<any>) => {
+            for (const item of r.data.results) {
+                this.articleList.push(item.article)
+            } 
+        }
+        RequestManager.nextPageAvailable(this.page, onResponse)
+    
+        onResponse = (r: AxiosResponse<any>) => {
+            console.log("page", this.page)
+            let count1 = r.data.count / 10
+            count1 = Number.isInteger(count1) ? count1 : count1 + 1
+            this.count = Number.isInteger(count1) ? count1 : Number.parseInt(count1.toFixed(0))
+        }
+        RequestManager.getArticleList(this.page, onResponse)
+    }
+
+    action1 = this.action()
+
+    update(){
+        this.$forceUpdate()
+    }
 }
 </script>

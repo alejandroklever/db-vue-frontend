@@ -61,8 +61,6 @@ export default class RequestManager {
     }
 
     static getArticleList(page: number, onResponse?: (r: AxiosResponse) => void, onCatch?: (r: any) => void) {
-        const list: any[] = []
-
         const currentUserId = UserManager.instance.currentUser == undefined ? 1 : UserManager.instance.currentUser.id
         const url = this.addParamsToUrl(this.apiUrl + 'participation', {
             "page": page,
@@ -71,18 +69,11 @@ export default class RequestManager {
         axios
             .get(url)
             .then(response => {
-                if(onResponse) onResponse(response)
-                else{
-                    for (const item of response.data.results) {
-                        list.push(item.article)
-                    } 
-                }
+                if (onResponse) onResponse(response)
             })
             .catch(reason => {
                 if (onCatch) onCatch(reason)
             })
-
-        return list
     }
 
     private static addParamsToUrl(url: string, params: any): string {
