@@ -4,10 +4,13 @@
         justify="center"
         >
         <v-pagination
+            v-if="count > 1"
             v-model="page"
+            circle
             :length="count"
-            :circle="true"
             :total-visible="10"
+            @previous="action()"
+            @next="action()"
             >
         </v-pagination>
     </v-row>
@@ -17,7 +20,7 @@
                 class="mx-auto"
                 style=" padding-left: 2rem; padding-right: 2rem;"
                 max-width="344"
-                shaped="true"
+                :shaped=true
                 elevation="6"
                 >
                 <v-card-text>
@@ -46,15 +49,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import { AxiosResponse } from 'axios'
 import RequestManager from '@/scripts/RequestManager'
 
-@Component
-export default class Article extends Vue {
+import  Article  from '@/components/Article.vue'
+
+@Component({components: { Article },})
+export default class Article1 extends Vue {
     circle = true
     page = 1
     count = 0
+    value = 0
     articleList: any[] = []
 
     action(){
@@ -65,9 +71,7 @@ export default class Article extends Vue {
             } 
         }
         RequestManager.nextPageAvailable(this.page, onResponse)
-    
         onResponse = (r: AxiosResponse<any>) => {
-            console.log("page", this.page)
             let count1 = r.data.count / 10
             count1 = Number.isInteger(count1) ? count1 : count1 + 1
             this.count = Number.isInteger(count1) ? count1 : Number.parseInt(count1.toFixed(0))
@@ -78,7 +82,7 @@ export default class Article extends Vue {
     action1 = this.action()
 
     update(){
-        this.$forceUpdate()
+        this.action()
     }
 }
 </script>
