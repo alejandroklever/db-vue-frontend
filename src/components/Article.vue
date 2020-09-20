@@ -9,6 +9,7 @@
             circle
             :length="count"
             :total-visible="10"
+            @input="action()"
             @previous="action()"
             @next="action()"
             >
@@ -80,9 +81,5 @@ export default class Article1 extends Vue {
     }
 
     action1 = this.action()
-
-    update(){
-        this.action()
-    }
 }
 </script>
