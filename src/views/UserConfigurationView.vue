@@ -76,7 +76,7 @@
                             </v-row>
                         </v-slide-x-transition>
                         <v-card-actions>
-                            <v-btn color="primary">Edtar</v-btn>
+                            <v-btn color="primary">Editar</v-btn>
                         </v-card-actions>
                     </v-form>
                 </v-col>
@@ -113,6 +113,7 @@ export default class UserConfigurationView extends Vue {
     created() {
         this.userForEdit = this.user
     }
+
     get user() {
         return DataManager.user
     }
