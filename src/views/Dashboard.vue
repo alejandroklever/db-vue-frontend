@@ -13,7 +13,7 @@
                         <v-icon>mdi-account-circle</v-icon>
                     </v-list-item-avatar>
 
-                    <v-list-item-content>
+                    <v-list-item-content v-if="user">
                         <v-list-item-title>{{ user.username }}</v-list-item-title>
                         <v-list-item-subtitle>{{ user.author.institution }}</v-list-item-subtitle>
                     </v-list-item-content>
@@ -42,7 +42,6 @@
 /* eslint-disable */
 import { Component, Vue } from 'vue-property-decorator'
 import DataManager from '../scripts/data-manager'
-import GenericMainVue from '@/views/GenericMainVue.vue'
 import UserConfigurationView from '@/views/UserConfigurationView.vue'
 import RequestManager from '@/scripts/request-manager'
 

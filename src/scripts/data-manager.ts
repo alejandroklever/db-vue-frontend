@@ -1,11 +1,6 @@
 import { User } from '@/scripts/models'
 import RequestManager from '@/scripts/request-manager'
 
-enum State {
-    Logged,
-    NotLogged,
-}
-
 export default class DataManager {
     private static _instance?: DataManager
 
@@ -31,9 +26,5 @@ export default class DataManager {
 
     static get token(): string | null {
         return localStorage.getItem('token')
-    }
-
-    static getUserRequest() {
-        RequestManager.getUser({ token: this.token }, undefined, r => console.log(r))
     }
 }
