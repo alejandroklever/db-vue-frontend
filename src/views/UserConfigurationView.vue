@@ -9,15 +9,7 @@
             </v-row>
             <v-row justify="center">
                 <v-col cols="3">
-                    <v-card elevation="100">
-                        <v-card-title> Ficha </v-card-title>
-                        <v-card-text v-for="property in properties" v-bind:key="property.key">
-                            <strong v-if="property.value != null">
-                                <b>{{ property.key }}:</b></strong
-                            >
-                            {{ property.value }}
-                        </v-card-text>
-                    </v-card>
+                    <info-card></info-card>
                 </v-col>
                 <v-col cols="5">
                     <v-tabs v-model="tab" background-color="primary" dark centered icons-and-text>
@@ -34,7 +26,7 @@
                         </v-tab>
                         <v-tabs-items v-model="tab">
                             <v-tab-item value="tab-1">
-                                <user-info-form :on-successful-response="created"></user-info-form>
+                                <user-info-form :on-successful-response="updateProperties"></user-info-form>
                             </v-tab-item>
                             <v-tab-item value="tab-2">
                                 <change-password-form></change-password-form>
@@ -55,11 +47,13 @@ import DataManager from '@/scripts/data-manager'
 
 import UserInfoForm from '@/components/UserInfoForm.vue'
 import ChangePasswordForm from '@/components/ChangePasswordForm.vue'
+import InfoCard from '@/components/InfoCard.vue'
 
 @Component({
     components: {
         'user-info-form': UserInfoForm,
         'change-password-form': ChangePasswordForm,
+        'info-card': InfoCard,
     },
 })
 export default class UserConfigurationView extends Vue {

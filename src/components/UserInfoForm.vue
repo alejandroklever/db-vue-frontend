@@ -31,14 +31,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { objectToSnakeCase } from '@/scripts/tools/name-formating'
 import RequestManager from '@/scripts/request-manager'
 import DataManager from '@/scripts/data-manager'
 
 @Component
 export default class UserInfoForm extends Vue {
-    @Prop() onSuccessfulResponse!: () => void
     private data: any = {}
 
     get user() {
@@ -61,10 +60,9 @@ export default class UserInfoForm extends Vue {
             DataManager.user?.id ?? 0,
             objectToSnakeCase(this.data),
             r => {
-              console.log(r.data)
+                console.log("successful update")
                 DataManager.setUser(r.data)
                 this.created()
-                this.onSuccessfulResponse?.()
             },
             () => {
                 //
