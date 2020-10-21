@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
+import { objectToSnakeCase } from '@/scripts/tools/name-formating'
 
 type OnResponse = (r: AxiosResponse) => void
 type OnCatch = (r: any) => void
@@ -8,14 +9,14 @@ export default class RequestManager {
 
     static postCreateUser(data: any, onResponse?: OnResponse, onCatch?: OnCatch): void {
         axios
-            .post(this.apiUrl + 'user/', data)
+            .post(this.apiUrl + 'user/create/',  objectToSnakeCase(data))
             .then(response => onResponse?.(response))
             .catch(reason => onCatch?.(reason))
     }
 
     static postLoginUser(data: any, onResponse?: OnResponse, onCatch?: OnCatch): void {
         axios
-            .post(this.apiUrl + 'auth/', data)
+            .post(this.apiUrl + 'auth/',  objectToSnakeCase(data))
             .then(response => onResponse?.(response))
             .catch(reason => onCatch?.(reason))
     }
@@ -36,7 +37,14 @@ export default class RequestManager {
 
     static putUser(id: number, data: any, onResponse?: OnResponse, onCatch?: OnCatch): void {
         axios
-            .put(this.apiUrl + `user/${id}/`, data)
+            .put(this.apiUrl + `user/update/${id}/`,  objectToSnakeCase(data))
+            .then(response => onResponse?.(response))
+            .catch(reason => onCatch?.(reason))
+    }
+
+    static putUserPassword(id: number, data: any, onResponse?: OnResponse, onCatch?: OnCatch) {
+        axios
+            .put(this.apiUrl + `user/change_password/${id}/`, objectToSnakeCase(data))
             .then(response => onResponse?.(response))
             .catch(reason => onCatch?.(reason))
     }

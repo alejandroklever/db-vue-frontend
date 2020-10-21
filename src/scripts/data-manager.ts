@@ -17,7 +17,7 @@ export default class DataManager {
         if (!this.token)
             if (data.token) localStorage.setItem('token', data.token)
             else return new User({})
-        return (this.instance.currentUser = new User(data))
+        return this.instance.currentUser = new User(data)
     }
 
     static get user(): User | undefined {
