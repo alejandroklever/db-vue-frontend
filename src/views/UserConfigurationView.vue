@@ -24,7 +24,7 @@
                         </v-tab>
                         <v-tabs-items v-model="tab">
                             <v-tab-item value="tab-1">
-                                <user-info-form :on-successful-response="updateProperties"></user-info-form>
+                                <user-info-form></user-info-form>
                             </v-tab-item>
                             <v-tab-item value="tab-2">
                                 <change-password-form></change-password-form>
@@ -54,23 +54,6 @@ import ChangePasswordForm from '@/components/user-edition/ChangePasswordForm.vue
 })
 export default class UserConfigurationView extends Vue {
     private tab = null
-    private properties: { key: string; value: string | number | undefined }[] = []
-
-    created() {
-        this.updateProperties()
-    }
-
-    updateProperties(): void {
-        this.properties = [
-            { key: 'Nombre de Usuario', value: this.user?.username },
-            { key: 'Nombre', value: this.user?.firstName },
-            { key: 'Apellido(s)', value: this.user?.lastName },
-            { key: 'Email', value: this.user?.email },
-            { key: 'Institución', value: this.user?.author?.institution },
-            { key: 'ORCID', value: this.user?.author?.orcid },
-            { key: 'Especialidad', value: this.user?.referee?.speciality },
-        ]
-    }
 
     get user() {
         return DataManager.user
