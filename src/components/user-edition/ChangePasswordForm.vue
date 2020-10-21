@@ -4,7 +4,7 @@
             <v-col cols="6">
                 <v-text-field
                     label="Contraseña Actual"
-                    v-model="currentPassword"
+                    v-model="data.password"
                     :append-icon="showCurrentPassword ? 'mdi-eye' : 'mdi-eye-off'"
                     :type="showCurrentPassword ? 'text' : 'password'"
                     rounded
@@ -15,7 +15,7 @@
             <v-col cols="6">
                 <v-text-field
                     label="Contraseña Nueva"
-                    v-model="newPassword"
+                    v-model="data.newPassword"
                     :append-icon="showNewPassword ? 'mdi-eye' : 'mdi-eye-off'"
                     :type="showNewPassword ? 'text' : 'password'"
                     rounded
@@ -30,16 +30,21 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import RequestManager from '@/scripts/request-manager'
+import DataManager from '@/scripts/data-manager'
 
 @Component
 export default class ChangePasswordForm extends Vue {
     private showCurrentPassword = false
     private showNewPassword = false
-    private currentPassword = ''
-    private newPassword = ''
+    private data = { password: '', newPassword: '' }
 
     changePassword(): void {
-        //
+        RequestManager.putUserPassword(DataManager.user?.id ?? -1, this.data, r => {
+          this.data.password = ''
+          this.data.newPassword = ''
+          alert('Contraseña Cambiada')
+        })
     }
 }
 </script>

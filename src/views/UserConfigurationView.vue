@@ -7,11 +7,9 @@
                     <v-icon color="black" size="35">mdi-account</v-icon>
                 </v-card-title>
             </v-row>
+            <v-spacer></v-spacer>
             <v-row justify="center">
-                <v-col cols="3">
-                    <info-card></info-card>
-                </v-col>
-                <v-col cols="5">
+                <v-col offset="2" cols="5">
                     <v-tabs v-model="tab" background-color="primary" dark centered icons-and-text>
                         <v-tabs-slider></v-tabs-slider>
 
@@ -45,15 +43,13 @@ import { Component, Vue } from 'vue-property-decorator'
 
 import DataManager from '@/scripts/data-manager'
 
-import UserInfoForm from '@/components/UserInfoForm.vue'
-import ChangePasswordForm from '@/components/ChangePasswordForm.vue'
-import InfoCard from '@/components/InfoCard.vue'
+import UserInfoForm from '@/components/user-edition/UserInfoForm.vue'
+import ChangePasswordForm from '@/components/user-edition/ChangePasswordForm.vue'
 
 @Component({
     components: {
         'user-info-form': UserInfoForm,
-        'change-password-form': ChangePasswordForm,
-        'info-card': InfoCard,
+        'change-password-form': ChangePasswordForm
     },
 })
 export default class UserConfigurationView extends Vue {
