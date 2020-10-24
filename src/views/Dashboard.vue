@@ -4,7 +4,28 @@
             <v-app-bar-nav-icon @click="miniVariant = !miniVariant"></v-app-bar-nav-icon>
             <v-toolbar-title class="font-weight-bold">Revista Cientifica</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-icon>mdi-account</v-icon>
+            <v-menu offset-x offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn dark icon v-bind="attrs" v-on="on">
+                        <v-icon>mdi-account</v-icon>
+                    </v-btn>
+                </template>
+                <v-list>
+                    <v-list-item
+                        ><v-list-item-title> Editar </v-list-item-title>
+                        <v-list-item-action
+                            @click.prevent="
+                                () => {
+                                    setViewsInFalse()
+                                    showEditProfileView = true
+                                }
+                            "
+                        >
+                        </v-list-item-action
+                    ></v-list-item>
+                    <v-list-item><v-list-item-title> Salir </v-list-item-title></v-list-item>
+                </v-list>
+            </v-menu>
         </v-app-bar>
         <v-navigation-drawer app floating color="blue darken-2" :mini-variant="miniVariant" :permanent="false" dark>
             <v-list dense nav class="py-0">
@@ -15,7 +36,7 @@
 
                     <v-list-item-content v-if="user">
                         <v-list-item-title>{{ user.username }}</v-list-item-title>
-                        <v-list-item-subtitle>{{ user.author.institution }}</v-list-item-subtitle>
+                        <v-list-item-subtitle>{{ user.institution }}</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -33,7 +54,8 @@
             </v-list>
         </v-navigation-drawer>
         <v-main>
-            <user-configuration v-if="editProfile"></user-configuration>
+            <user-configuration v-if="showEditProfileView"></user-configuration>
+            <articles-view v-if="showArticlesView"></articles-view>
         </v-main>
     </div>
 </template>
@@ -44,26 +66,58 @@ import { Component, Vue } from 'vue-property-decorator'
 import DataManager from '../scripts/data-manager'
 import UserConfigurationView from '@/views/UserConfigurationView.vue'
 import RequestManager from '@/scripts/request-manager'
+import ArticlesView from '@/views/ArticlesView.vue'
 
 @Component({
-    components: { 'user-configuration': UserConfigurationView },
+    components: { ArticlesView, 'user-configuration': UserConfigurationView, 'articles-view': ArticlesView },
 })
 export default class Dashboard extends Vue {
-    private permanent = true
     private miniVariant = false
+
     private showDashboard = false
-    private showArticleList = false
+    private showArticlesView = false
     private showRevList = false
-    private showPhotos = false
     private showAbout = false
-    private editProfile = false
+    private showEditProfileView = false
+
+    private user = {
+        username: '',
+        institution: '',
+    }
 
     private items = [
-        { title: 'Dashboard', icon: 'mdi-view-dashboard', action: () => 0 },
-        { title: 'Artículos', icon: 'mdi-file-document-outline', action: () => 1 },
-        { title: 'Revision', icon: 'mdi-file-document-edit-outline', action: () => 2 },
-        { title: 'Photos', icon: 'mdi-image', action: () => 3 },
-        { title: 'About', icon: 'mdi-help-box', action: () => 4 },
+        {
+            title: 'Dashboard',
+            icon: 'mdi-view-dashboard',
+            action: () => {
+                this.setViewsInFalse()
+                this.showDashboard = true
+            },
+        },
+        {
+            title: 'Artículos',
+            icon: 'mdi-file-document-outline',
+            action: () => {
+                this.setViewsInFalse()
+                this.showArticlesView = true
+            },
+        },
+        {
+            title: 'Revision',
+            icon: 'mdi-file-document-edit-outline',
+            action: () => {
+                this.setViewsInFalse()
+                this.showRevList = true
+            },
+        },
+        {
+            title: 'About',
+            icon: 'mdi-help-box',
+            action: () => {
+                this.setViewsInFalse()
+                this.showAbout = true
+            },
+        },
     ]
 
     created() {
@@ -71,14 +125,25 @@ export default class Dashboard extends Vue {
         else if (!DataManager.user)
             RequestManager.getUserFromToken(DataManager.token, r => {
                 DataManager.setUser(r.data.user)
-                console.log('logged user => ', DataManager.user?.username)
-                this.editProfile = true
+                console.log('logged user =>', DataManager.user?.username)
+                this.showArticlesView = true
+                this.user.username = DataManager.user?.username || ''
+                this.user.institution = DataManager.user?.author?.institution || ''
             })
-        else this.editProfile = true
+        else {
+            this.showArticlesView = true
+            this.user.username = DataManager.user.username || ''
+            this.user.institution = DataManager.user.author?.institution || ''
+            console.log(this.user)
+        }
     }
 
-    get user() {
-        return DataManager.user
+    setViewsInFalse(): void {
+        this.showDashboard = false
+        this.showRevList = false
+        this.showAbout = false
+        this.showArticlesView = false
+        this.showEditProfileView = false
     }
 }
 </script>
