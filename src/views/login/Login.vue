@@ -6,9 +6,9 @@
                     <v-spacer></v-spacer>
 
                     <v-col class="mb-5 offset-2" cols="8">
-                        <h1 class="text-center font-weight-bold">
+                        <v-card-title class="text-center font-weight-bold">
                             Revista Cientifica
-                        </h1>
+                        </v-card-title>
                     </v-col>
 
                     <v-spacer></v-spacer>

@@ -17,7 +17,7 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-col :cols="data.referee == null ? 12 : 6">
+            <v-col :cols="data.author == null ? 12 : 6">
                 <v-text-field label="Institución" v-model="data.author.institution" rounded outlined></v-text-field>
             </v-col>
             <v-col cols="6" v-if="data.referee != null">

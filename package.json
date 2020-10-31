@@ -57,6 +57,7 @@
       "ecmaVersion": 2020
     },
     "rules": {
+      "no-use-before-define": "off",
       "no-empty-function": "off"
     }
   },
