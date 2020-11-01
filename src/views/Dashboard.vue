@@ -3,7 +3,8 @@
         <app-bar-and-navigation-drawer></app-bar-and-navigation-drawer>
         <v-main>
             <user-configuration v-if="false"></user-configuration>
-            <list-articles-view v-if="true"></list-articles-view>
+            <list-articles-view v-if="false"></list-articles-view>
+            <list-referees-view v-if="true"></list-referees-view>
         </v-main>
     </div>
 </template>
@@ -13,6 +14,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import UserConfigurationView from '@/views/UserConfigurationView.vue'
 import ListArticlesView from '@/views/ListArticlesView.vue'
+import ListRefereesView from '@/views/ListRefereesView.vue'
 import AppBarAndNavigationDrawer from '@/components/AppBarAndNavigationDrawer.vue'
 
 @Component({
@@ -20,6 +22,7 @@ import AppBarAndNavigationDrawer from '@/components/AppBarAndNavigationDrawer.vu
         'app-bar-and-navigation-drawer': AppBarAndNavigationDrawer,
         'user-configuration': UserConfigurationView,
         'list-articles-view': ListArticlesView,
+        'list-referees-view': ListRefereesView,
     },
 })
 export default class Dashboard extends Vue {
