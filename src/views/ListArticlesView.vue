@@ -188,8 +188,6 @@ export default class ListArticlesView extends Vue {
     private showEdit = false
     private showAuthors = false
 
-    @Prop() createArticle!: () => void
-
     private currentArticle = null
     private articles: Article[] = []
     private filteredArticles: Article[] = []

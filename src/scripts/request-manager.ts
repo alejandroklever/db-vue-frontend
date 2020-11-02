@@ -49,9 +49,16 @@ export default class RequestManager {
             .catch(reason => onCatch?.(reason))
     }
 
-    static getUserArticles(id: number | undefined, onResponse?: OnResponse, onCatch?: OnCatch) {
+    static getUserArticles(authorId: number, onResponse?: OnResponse, onCatch?: OnCatch) {
         axios
-            .get(this.apiUrl + `author/articles/${id}`)
+            .get(this.apiUrl + `author/articles/${authorId}`)
+            .then(r => onResponse?.(r))
+            .catch(r => onCatch?.(r))
+    }
+
+    static getReviewArticles(refereeID: number, onResponse?: OnResponse, onCatch?: OnCatch) {
+        axios
+            .get(this.apiUrl + `reviews/?referee_id=${refereeID}`)
             .then(r => onResponse?.(r))
             .catch(r => onCatch?.(r))
     }

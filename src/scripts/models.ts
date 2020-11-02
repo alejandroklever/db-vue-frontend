@@ -20,7 +20,7 @@ export class Author extends Model {
 }
 
 export class Referee extends Model {
-    speciality!: string[]
+    specialities!: string[]
 }
 
 export class User extends Model {

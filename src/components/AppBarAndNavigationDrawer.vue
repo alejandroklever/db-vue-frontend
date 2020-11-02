@@ -119,7 +119,7 @@ export default class AppBarAndNavigationDrawer extends Vue {
         else {
             this.user.username = DataManager.user.username || ''
             this.user.institution = DataManager.user.author?.institution || ''
-            console.log(this.user)
+            console.log('already logged => ' + this.user)
         }
     }
 }

@@ -38,8 +38,8 @@ const routes: RouteConfig[] = [
         component: CreateArticleView,
     },
     {
-        path: '/article/review',
-        name: 'list-article-in-review',
+        path: '/article/reviews/:refereeId',
+        name: 'list-reviews',
         component: ArticlesToReviewView,
     },
     {

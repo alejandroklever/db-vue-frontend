@@ -21,7 +21,7 @@
                 <v-text-field label="Institución" v-model="data.author.institution" rounded outlined></v-text-field>
             </v-col>
             <v-col cols="6" v-if="data.referee != null">
-                <v-text-field label="Speciality" v-model="data.referee.speciality" rounded outlined></v-text-field>
+                <v-text-field label="Speciality" v-model="data.referee.specialities" rounded outlined></v-text-field>
             </v-col>
         </v-row>
         <v-card-actions>
@@ -51,7 +51,7 @@ export default class UserInfoForm extends Vue {
             lastName: this.user?.lastName,
             email: this.user?.email,
             author: this.user?.author != null ? { institution: this.user?.author?.institution } : null,
-            referee: this.user?.referee != null ? { speciality: this.user?.referee?.speciality } : null,
+            referee: this.user?.referee != null ? { speciality: this.user?.referee?.specialities } : null,
         }
     }
 

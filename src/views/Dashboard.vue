@@ -1,10 +1,6 @@
 <template>
     <div>
         <app-bar-and-navigation-drawer :on-load-user="redirect"></app-bar-and-navigation-drawer>
-        <v-main>
-            <user-configuration v-if="false"></user-configuration>
-            <list-articles-view v-if="true"></list-articles-view>
-        </v-main>
     </div>
 </template>
 
@@ -26,7 +22,11 @@ import DataManager from '@/scripts/data-manager'
 export default class Dashboard extends Vue {
     redirect() {
         const id = DataManager.user?.author?.id
-        this.$router.push({ name: 'list-article-in-review' })
+        console.log(DataManager.user?.referee || '-')
+        this.$router.push({
+            name: 'list-reviews',
+            params: { refereeId: DataManager.user?.referee?.id.toString() || '0' },
+        })
         // this.$router.push({ name: 'list-article', params: { authorId: id?.toString() || '0' } })
     }
 }
