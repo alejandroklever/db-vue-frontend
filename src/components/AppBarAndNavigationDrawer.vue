@@ -8,8 +8,8 @@
                     </v-list-item-avatar>
 
                     <v-list-item-content v-if="true">
-                        <v-list-item-title>Alejandro Klever</v-list-item-title>
-                        <v-list-item-subtitle>Universidad de la Habana</v-list-item-subtitle>
+                        <v-list-item-title>{{ user.username }}</v-list-item-title>
+                        <v-list-item-subtitle>{{ user.institution }}</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -52,12 +52,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import DataManager from '@/scripts/data-manager'
 import RequestManager from '@/scripts/request-manager'
 
 @Component
 export default class AppBarAndNavigationDrawer extends Vue {
+    @Prop() onLoadUser!: () => void
+
     private miniVariant = false
     private user = {
         username: '',
@@ -99,12 +101,21 @@ export default class AppBarAndNavigationDrawer extends Vue {
     created() {
         if (!DataManager.token) this.$router.push('login')
         else if (!DataManager.user)
-            RequestManager.getUserFromToken(DataManager.token, r => {
-                DataManager.setUser(r.data.user)
-                console.log('logged user =>', DataManager.user?.username)
-                this.user.username = DataManager.user?.username || ''
-                this.user.institution = DataManager.user?.author?.institution || ''
-            })
+            RequestManager.getUserFromToken(
+                DataManager.token,
+                r => {
+                    DataManager.setUser(r.data.user)
+                    console.log('logged user =>', DataManager.user?.username)
+                    this.user.username = DataManager.user?.username || ''
+                    this.user.institution = DataManager.user?.author?.institution || ''
+                    this.onLoadUser?.()
+                },
+                r => {
+                    console.log(r)
+                    localStorage.removeItem('token')
+                    this.$router.push('login')
+                }
+            )
         else {
             this.user.username = DataManager.user.username || ''
             this.user.institution = DataManager.user.author?.institution || ''

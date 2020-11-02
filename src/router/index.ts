@@ -7,6 +7,7 @@ import Dashboard from '@/views/Dashboard.vue'
 import ListArticlesView from '@/views/ListArticlesView.vue'
 import CreateArticleView from '@/views/CreateArticleView.vue'
 import UserConfigurationView from '@/views/UserConfigurationView.vue'
+import ArticlesToReviewView from '@/views/ArticlesToReviewView.vue'
 
 Vue.use(VueRouter)
 
@@ -27,7 +28,7 @@ const routes: RouteConfig[] = [
         component: SignUp,
     },
     {
-        path: '/articles',
+        path: '/articles/:authorId',
         name: 'list-articles',
         component: ListArticlesView,
     },
@@ -35,6 +36,11 @@ const routes: RouteConfig[] = [
         path: '/article/create',
         name: 'create-article',
         component: CreateArticleView,
+    },
+    {
+        path: '/article/review',
+        name: 'list-article-in-review',
+        component: ArticlesToReviewView,
     },
     {
         path: '/user/configuration',
