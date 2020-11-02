@@ -4,7 +4,6 @@ export class Model {
     id!: number
 
     constructor(object: any) {
-        console.log('breakpoint')
         const keys: string[] = Object.keys(object)
         for (let i = 0; i < keys.length; i++) (this as any)[toCamelCase(keys[i])] = object[keys[i]]
         this.constructSpecialFields(object)
@@ -21,7 +20,7 @@ export class Author extends Model {
 }
 
 export class Referee extends Model {
-    speciality!: string
+    speciality!: string[]
 }
 
 export class User extends Model {
@@ -51,12 +50,30 @@ export class User extends Model {
 export class Article extends Model {
     title!: string
     keywords!: string[]
+    evaluation!: string
     mcc!: string
+    submitDate !: Date
     endDate!: string
     authors!: Author[]
 
     protected constructSpecialFields(object: any) {
         if (object.authors)
             for (let i = 0; i < object.authors.length; i++) this.authors[i] = new Author(object.authors[i])
+    }
+
+    static titleCompare(a: Article, b: Article): number {
+        return a.title.localeCompare(b.title)
+    }
+
+    static evaluationCompare(a: Article, b: Article): number {
+        return a.title.localeCompare(a.title)
+    }
+
+    static submitDateCompare(a: Article, b: Article): number {
+        return a.title.localeCompare(a.title)
+    }
+
+    static endDateCompare(a: Article, b: Article): number {
+        return a.title.localeCompare(a.title)
     }
 }

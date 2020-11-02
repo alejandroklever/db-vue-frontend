@@ -5,11 +5,12 @@
             <v-col>
                 <v-card class="mx-auto" elevation="0">
                     <v-data-iterator
-                        :items="articles"
-                        item-key="title"
+                        :items="filteredArticles"
+                        item-key="id"
                         :page="page"
                         :items-per-page.sync="itemsPerPage"
                         :single-expand="true"
+                        :sort-desc="sortDesc"
                         hide-default-footer
                     >
                         <template v-slot:header>
@@ -22,10 +23,12 @@
                                     hide-details
                                     prepend-inner-icon="mdi-magnify"
                                     label="Buscar"
+                                    @input="onInputSearch"
                                 ></v-text-field>
                                 <template v-if="$vuetify.breakpoint.mdAndUp">
                                     <v-spacer></v-spacer>
                                     <v-select
+                                        class="mr-4"
                                         v-model="sortBy"
                                         flat
                                         solo-inverted
@@ -33,9 +36,9 @@
                                         :items="keys"
                                         prepend-inner-icon="mdi-magnify"
                                         label="Ordenar por"
+                                        @change="onChangeOrderKey"
                                     ></v-select>
-                                    <v-spacer></v-spacer>
-                                    <v-btn-toggle v-model="sortDesc" mandatory>
+                                    <v-btn-toggle class="mr-4" v-model="sortDesc" mandatory>
                                         <v-btn large depressed color="blue" :value="false">
                                             <v-icon>mdi-arrow-up</v-icon>
                                         </v-btn>
@@ -43,7 +46,6 @@
                                             <v-icon>mdi-arrow-down</v-icon>
                                         </v-btn>
                                     </v-btn-toggle>
-                                    <v-spacer></v-spacer>
                                     <v-btn fab color="primary" :to="{ name: 'create-article' }">
                                         <v-icon>mdi-plus</v-icon>
                                     </v-btn>
@@ -53,15 +55,15 @@
                                 <div class="text-center">
                                     <v-pagination
                                         v-model="page"
-                                        :length="Math.ceil(articles.length / itemsPerPage)"
+                                        :length="Math.ceil(filteredArticles.length / itemsPerPage)"
                                     ></v-pagination>
                                 </div>
                             </v-row>
                         </template>
                         <template v-slot:default="{ items, isExpanded, expand }">
                             <v-row>
-                                <v-col v-for="article in items" :key="article.title" offset="2" cols="8">
-                                    <v-card>
+                                <v-col v-for="article in items" :key="article.id" offset="2" cols="8">
+                                    <v-card v-if="article.title.toLowerCase().includes(search)">
                                         <v-row>
                                             <v-card-title>
                                                 <h4>{{ article.title }}</h4>
@@ -106,7 +108,7 @@
                                                         <v-card-subtitle>
                                                             {{ user.email }}
                                                         </v-card-subtitle>
-                                                        <v-card-text>{{ user.institution }}</v-card-text>
+                                                        <v-card-text>{{ user.author.institution }}</v-card-text>
                                                     </v-card>
                                                 </v-col>
                                             </v-row>
@@ -143,7 +145,7 @@
                                 <div class="text-center">
                                     <v-pagination
                                         v-model="page"
-                                        :length="Math.ceil(articles.length / itemsPerPage)"
+                                        :length="Math.ceil(filteredArticles.length / itemsPerPage)"
                                     ></v-pagination>
                                 </div>
                             </v-row>
@@ -161,6 +163,8 @@ import ArticleCard from '@/components/ArticleCard.vue'
 import AppBarAndNavigationDrawer from '@/components/AppBarAndNavigationDrawer.vue'
 import CreateArticleForm from '@/components/CreateArticleForm.vue'
 import DataManager from '@/scripts/data-manager'
+import RequestManager from '@/scripts/request-manager'
+import { Article } from '@/scripts/models'
 
 @Component({
     components: {
@@ -170,114 +174,39 @@ import DataManager from '@/scripts/data-manager'
     },
 })
 export default class ListArticlesView extends Vue {
+    // Params
+    private authorId = 0
+
     private page = 1
     private search = ''
-    private keys = ['título', 'autor']
     private sortBy = ''
+    private keys = ['Título', 'Evaluación', 'Fecha de envío', 'Fecha de finalización']
     private sortDesc = false
-    private itemsPerPage = 10
+    private itemsPerPage = 5
     private files = []
-    private editing = null
-    private editingIndex = -1
-    private currentArticle = null
 
     private showEdit = false
     private showAuthors = false
 
     @Prop() createArticle!: () => void
 
-    private articles = [
-        {
-            title: 'Grafos y Planicidad',
-            keywords: ['Planicidad', 'Grafos'],
-            authors: [
-                {
-                    id: 1,
-                    username: 'Alejandro Klever',
-                    email: 'alejandroklever4197@gmail.com',
-                    institution: 'Universidad de la Habana',
-                },
-                {
-                    id: 2,
-                    username: 'Yasmin Cisneros Cimadevila',
-                    email: 'yasmincisneros@gmail.com',
-                    institution: 'Universidad de la Habana',
-                },
-                {
-                    id: 3,
-                    username: 'Miguel Angel Gonzalez',
-                    email: 'miguelgonzalez@gmail.com',
-                    institution: 'Universidad de la Habana',
-                },
-            ],
-            color: 'green',
-            evaluation: 'aceptado',
-            icon: 'mdi-check-outline',
-        },
-        {
-            title: 'Computadoras y sus límites',
-            keywords: ['Turing Machine', 'Matematicas'],
-            authors: [
-                {
-                    id: 1,
-                    username: 'Alejandro Klever',
-                    email: 'alejandroklever4197@gmail.com',
-                    institution: 'Universidad de la Habana',
-                },
-                {
-                    id: 2,
-                    username: 'Yasmin Cisneros Cimadevila',
-                    email: 'yasmincisneros@gmail.com',
-                    institution: 'Universidad de la Habana',
-                },
-                {
-                    id: 3,
-                    username: 'Miguel Angel Gonzalez',
-                    email: 'miguelgonzalez@gmail.com',
-                    institution: 'Universidad de la Habana',
-                },
-            ],
-            color: 'primary',
-            evaluation: 'aceptado con cambios míinimos',
-            icon: 'mdi-check-outline',
-        },
-        {
-            title: 'Transformada de Fourier y detección de bordes en imágenes',
-            keywords: ['Fourier', 'Imagenes', 'Bordes'],
-            authors: [
-                {
-                    id: 1,
-                    username: 'Alejandro Klever',
-                    email: 'alejandroklever4197@gmail.com',
-                    institution: 'Universidad de la Habana',
-                },
-                {
-                    id: 2,
-                    username: 'Yasmin Cisneros Cimadevila',
-                    email: 'yasmincisneros@gmail.com',
-                    institution: 'Universidad de la Habana',
-                },
-                {
-                    id: 3,
-                    username: 'Miguel Angel Gonzalez',
-                    email: 'miguelgonzalez@gmail.com',
-                    institution: 'Universidad de la Habana',
-                },
-            ],
-            color: 'red',
-            evaluation: 'denegado',
-            icon: 'mdi-close-box-outline',
-        },
-    ]
+    private currentArticle = null
+    private articles: Article[] = []
+    private filteredArticles: Article[] = []
 
-    edit(index: any, item: any) {
-        if (!this.editing) {
-            this.editing = item
-            this.editingIndex = index
-        } else {
-            this.editing = null
-            this.editingIndex = -1
-        }
+    created(): void {
+        this.authorId = parseInt(this.$route.params.authorId)
+        RequestManager.getUserArticles(
+            this.authorId,
+            r => {
+                const articles = r.data.articles
+                for (let i = 0; i < articles.length; i++) {
+                    this.articles.push(new Article(articles[i]))
+                    this.filteredArticles.push(new Article(articles[i]))
+                }
+            },
+            r => console.log(r)
+        )
     }
 
     onChangeEditSwitch(v: any, article: any, expand: any, isExpanded: any) {
@@ -292,6 +221,30 @@ export default class ListArticlesView extends Vue {
         expand(article, v)
         this.showAuthors = isExpanded(article)
         this.currentArticle = article
+    }
+
+    onInputSearch(any: any): void {
+        if (this.search != '' && any != null)
+            this.filteredArticles = this.articles.filter(x => x.title.toLowerCase().includes(this.search.toLowerCase()))
+        else this.filteredArticles = this.articles
+    }
+
+    onChangeOrderKey(any: any): void {
+        let compareFn = undefined
+        if (this.sortBy === 'Título') compareFn = Article.titleCompare
+        else if (this.sortBy === 'Evaluación') compareFn = Article.evaluationCompare
+        else if (this.sortBy === 'Fecha de envío') compareFn = Article.submitDateCompare
+        else if (this.sortBy === 'Fecha de finalización') compareFn = Article.endDateCompare
+
+        let articles = this.articles
+
+        if (this.search != '')
+            articles = articles.filter(x => x.title.toLowerCase().includes(this.search.toLowerCase()))
+
+        if (compareFn)
+            if (this.sortDesc) this.filteredArticles = articles.sort(compareFn).reverse()
+            else this.filteredArticles = articles.sort(compareFn)
+        else this.filteredArticles = articles
     }
 
     get user() {
